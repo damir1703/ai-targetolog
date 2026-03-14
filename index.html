@@ -947,18 +947,34 @@ function animateConfetti() {
   }
 }
 
-// Track previously completed phases to avoid re-triggering
-const phaseCelebrated = {};
+// Track previously completed phases/categories to avoid re-triggering
+const celebrated = {};
 
 function checkPhaseCelebration() {
+  // Проверяем фазы
   [1, 2, 3].forEach(ph => {
-    const phTasks = TASKS.filter(t => t.phase === String(ph));
-    const allDone = phTasks.length > 0 && phTasks.every(t => done[t.id]);
-    if (allDone && !phaseCelebrated[ph]) {
-      phaseCelebrated[ph] = true;
+    const key = 'phase_' + ph;
+    const tasks = TASKS.filter(t => t.phase === String(ph));
+    const allDone = tasks.length > 0 && tasks.every(t => done[t.id]);
+    if (allDone && !celebrated[key]) {
+      celebrated[key] = true;
       setTimeout(launchConfetti, 200);
     } else if (!allDone) {
-      phaseCelebrated[ph] = false;
+      celebrated[key] = false;
+    }
+  });
+
+  // Проверяем категории внутри активной фазы
+  CATEGORIES.forEach(cat => {
+    const key = 'cat_' + cat.key;
+    const tasks = TASKS.filter(t => t.cat === cat.key &&
+      (currentPhase === 'all' || t.phase === currentPhase));
+    const allDone = tasks.length > 0 && tasks.every(t => done[t.id]);
+    if (allDone && !celebrated[key]) {
+      celebrated[key] = true;
+      setTimeout(launchConfetti, 200);
+    } else if (!allDone) {
+      celebrated[key] = false;
     }
   });
 }
