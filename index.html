@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Таргетолог — Launch Checklist</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0D0D0D; color: #E0E0E0; font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; transition: background 0.2s, color 0.2s; }
+
+/* Light mode */
+body.light { background: #F5F5F5; color: #1A1A1A; }
+body.light header { background: #FFFFFF; border-bottom-color: #E0E0E0; }
+body.light .logo-text { color: #1A1A1A; }
+body.light .logo-sub { color: #888; }
+body.light .progress-label { color: #888; }
+body.light .progress-count { color: #1A1A1A; }
+body.light .progress-bar-wrap { background: #E0E0E0; }
+body.light .btn-reset, body.light .btn-print, body.light .btn-theme { background: transparent; border-color: #D0D0D0; color: #666; }
+body.light .phase-tabs { background: #FFFFFF; border-bottom-color: #E0E0E0; }
+body.light .phase-tab { color: #999; }
+body.light .phase-tab:hover { color: #333; }
+body.light .gantt-section { background: #F5F5F5; }
+body.light .gantt-title { color: #999; }
+body.light .phase-card { background: #FFFFFF; border-color: #E0E0E0; }
+body.light .phase-card-header:hover { background: #FAFAFA; }
+body.light .phase-card-left { border-right-color: #E0E0E0; }
+body.light .phase-card-name { color: #1A1A1A; }
+body.light .phase-card-sub { color: #999; }
+body.light .phase-chevron { color: #BBBBBB; }
+body.light .phase-bar-track { background: #EEEEEE; border-color: #E0E0E0; }
+body.light .phase-bar-label { color: #AAA; }
+body.light .phase-bar-pct { color: #666; }
+body.light .phase-stat-num { color: #1A1A1A; }
+body.light .phase-stat-total { color: #AAA; }
+body.light .phase-card-detail { border-top-color: #E0E0E0; }
+body.light .phase-detail-title { color: #AAA; }
+body.light .phase-detail-text { color: #555; }
+body.light .gantt-weekly th { background: #F0F0F0; color: #AAA; border-color: #E0E0E0; }
+body.light .gantt-weekly td { border-color: #E0E0E0; }
+body.light .gantt-weekly td.cat-label { background: #F5F5F5; color: #AAA; }
+body.light .filters { background: #F5F5F5; border-bottom-color: #E0E0E0; }
+body.light .filter-label { color: #AAA; }
+body.light .filter-btn { background: #FFFFFF; border-color: #E0E0E0; color: #666; }
+body.light .filter-btn:hover { border-color: #BBBBBB; color: #333; }
+body.light .hide-done-btn { background: #FFFFFF; border-color: #E0E0E0; color: #666; }
+body.light .hide-done-btn.active { background: #EEE; border-color: #CCC; }
+body.light .search-wrap input { background: #FFFFFF; border-color: #E0E0E0; color: #1A1A1A; }
+body.light .search-icon { color: #BBBBBB; }
+body.light .category-block { background: #FFFFFF; border-color: #E0E0E0; }
+body.light .category-header:hover { background: #FAFAFA; }
+body.light .cat-name { color: #1A1A1A; }
+body.light .cat-progress { color: #AAA; }
+body.light .cat-mini-bar { background: #E0E0E0; }
+body.light .tasks-container { border-top-color: #E0E0E0; }
+body.light .task-item { border-bottom-color: #F0F0F0; }
+body.light .task-item:hover { background: #FAFAFA; }
+body.light .task-check { border-color: #D0D0D0; }
+body.light .task-text { color: #333; }
+body.light .task-item.done .task-text { color: #BBBBBB; }
+body.light .no-results { color: #CCC; }
+
+/* Theme toggle button */
+.btn-theme { background: transparent; border: 1px solid #2A2A2A; color: #888; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+
+/* Header */
+header { background: #161616; border-bottom: 1px solid #2A2A2A; padding: 16px 24px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon { width: 36px; height: 36px; background: #E53935; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.logo-text { font-size: 18px; font-weight: 700; color: #fff; }
+.logo-sub { font-size: 12px; color: #888; }
+.header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.total-progress { display: flex; align-items: center; gap: 10px; }
+.progress-label { font-size: 13px; color: #888; }
+.progress-count { font-size: 15px; font-weight: 700; color: #fff; }
+.progress-bar-wrap { width: 120px; height: 6px; background: #2A2A2A; border-radius: 3px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: #E53935; border-radius: 3px; transition: width 0.3s; }
+.btn-reset { background: transparent; border: 1px solid #2A2A2A; color: #888; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+.btn-reset:hover { border-color: #E53935; color: #E53935; }
+.btn-print { background: transparent; border: 1px solid #2A2A2A; color: #888; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+.btn-print:hover { border-color: #4CAF50; color: #4CAF50; }
+
+/* Phase tabs */
+.phase-tabs { background: #161616; border-bottom: 1px solid #2A2A2A; padding: 0 24px; display: flex; gap: 0; overflow-x: auto; }
+.phase-tab { padding: 14px 20px; cursor: pointer; font-size: 13px; font-weight: 500; color: #888; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s; }
+.phase-tab:hover { color: #E0E0E0; }
+.phase-tab.active { color: #E53935; border-bottom-color: #E53935; }
+
+/* Gantt / Phase Overview */
+.gantt-section { padding: 24px 24px 0; border-bottom: 1px solid #2A2A2A; }
+.gantt-title { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+.gantt-phases { display: flex; flex-direction: column; gap: 0; }
+
+.phase-card { border: 1px solid #2A2A2A; border-radius: 10px; margin-bottom: 10px; overflow: hidden; background: #161616; }
+.phase-card-header { display: flex; align-items: center; gap: 0; cursor: pointer; user-select: none; transition: background 0.15s; }
+.phase-card-header:hover { background: #1a1a1a; }
+.phase-card-left { width: 340px; flex-shrink: 0; padding: 18px 20px; border-right: 1px solid #2A2A2A; display: flex; align-items: center; gap: 14px; }
+.phase-badge { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; flex-shrink: 0; }
+.phase-badge.ph1 { background: rgba(229,57,53,0.15); color: #E53935; border: 1px solid rgba(229,57,53,0.3); }
+.phase-badge.ph2 { background: rgba(255,152,0,0.15); color: #FF9800; border: 1px solid rgba(255,152,0,0.3); }
+.phase-badge.ph3 { background: rgba(76,175,80,0.15); color: #4CAF50; border: 1px solid rgba(76,175,80,0.3); }
+.phase-card-meta { flex: 1; }
+.phase-card-name { font-size: 15px; font-weight: 700; color: #E0E0E0; }
+.phase-card-sub { font-size: 12px; color: #666; margin-top: 2px; }
+.phase-chevron { font-size: 11px; color: #555; transition: transform 0.25s; margin-left: 10px; }
+.phase-chevron.open { transform: rotate(90deg); }
+
+.phase-card-right { flex: 1; padding: 14px 20px; display: flex; align-items: center; gap: 16px; }
+.phase-bar-wrap { flex: 1; position: relative; }
+.phase-bar-track { height: 12px; background: #1E1E1E; border-radius: 6px; overflow: hidden; border: 1px solid #2A2A2A; }
+.phase-bar-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; min-width: 0; }
+.phase-bar-labels { display: flex; justify-content: space-between; margin-top: 5px; }
+.phase-bar-label { font-size: 11px; color: #555; }
+.phase-bar-pct { font-size: 11px; color: #888; font-weight: 600; }
+.phase-stat { text-align: right; flex-shrink: 0; }
+.phase-stat-num { font-size: 20px; font-weight: 800; color: #E0E0E0; }
+.phase-stat-total { font-size: 11px; color: #555; }
+
+.phase-card-detail { border-top: 1px solid #2A2A2A; display: none; }
+.phase-card-detail.open { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; }
+.phase-detail-col { padding: 20px 22px; border-right: 1px solid #2A2A2A; }
+.phase-detail-col:last-child { border-right: none; }
+.phase-detail-title { font-size: 10px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+.phase-detail-text { font-size: 13px; color: #999; line-height: 1.6; }
+.phase-detail-text li { margin-bottom: 5px; padding-left: 4px; }
+.phase-detail-text ul { padding-left: 16px; }
+.phase-done-badge { display: inline-block; margin-top: 10px; background: rgba(76,175,80,0.1); border: 1px solid rgba(76,175,80,0.3); color: #4CAF50; font-size: 11px; padding: 3px 10px; border-radius: 20px; }
+
+/* Timeline */
+.timeline-wrap { padding: 20px 0 24px; }
+.timeline-axis { display: flex; margin-left: 110px; margin-bottom: 8px; }
+.timeline-axis-item { flex: 1; font-size: 10px; color: #555; text-align: center; position: relative; }
+.timeline-axis-item::before { content: ''; position: absolute; top: -4px; left: 50%; width: 1px; height: 4px; background: #333; }
+.timeline-rows { display: flex; flex-direction: column; gap: 7px; }
+.timeline-row { display: flex; align-items: center; gap: 0; }
+.timeline-row-label { width: 110px; flex-shrink: 0; font-size: 11px; color: #666; padding-right: 12px; text-align: right; }
+.timeline-row-track { flex: 1; height: 10px; background: #1A1A1A; border-radius: 5px; position: relative; overflow: hidden; }
+.timeline-segment { position: absolute; top: 0; height: 100%; border-radius: 5px; opacity: 0.75; }
+.timeline-seg-ph1 { background: #E53935; }
+.timeline-seg-ph2 { background: #FF9800; }
+.timeline-seg-ph3 { background: #4CAF50; }
+.timeline-divider { position: absolute; top: -2px; bottom: -2px; width: 1px; background: #333; z-index: 2; }
+.timeline-phase-label { position: absolute; top: -18px; font-size: 9px; color: #555; white-space: nowrap; transform: translateX(-50%); }
+
+/* Light mode timeline */
+body.light .timeline-axis-item { color: #CCC; }
+body.light .timeline-axis-item::before { background: #DDD; }
+body.light .timeline-row-label { color: #AAA; }
+body.light .timeline-row-track { background: #F0F0F0; }
+body.light .timeline-divider { background: #DDD; }
+body.light .timeline-phase-label { color: #BBB; }
+
+/* Filters */
+.filters { padding: 16px 24px; border-bottom: 1px solid #2A2A2A; background: #0D0D0D; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.filter-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.filter-label { font-size: 12px; color: #666; margin-right: 2px; }
+.filter-btn { background: #1E1E1E; border: 1px solid #2A2A2A; color: #888; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; transition: all 0.15s; }
+.filter-btn:hover { border-color: #444; color: #ccc; }
+.filter-btn.active { background: #E53935; border-color: #E53935; color: #fff; }
+.filter-btn.active.priority-important { background: #FF9800; border-color: #FF9800; }
+.filter-btn.active.priority-nice { background: #4CAF50; border-color: #4CAF50; }
+.hide-done-btn { background: #1E1E1E; border: 1px solid #2A2A2A; color: #888; padding: 5px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; transition: all 0.15s; }
+.hide-done-btn.active { background: #333; border-color: #555; color: #ccc; }
+.search-wrap { position: relative; margin-left: auto; }
+.search-wrap input { background: #1E1E1E; border: 1px solid #2A2A2A; color: #E0E0E0; padding: 6px 12px 6px 32px; border-radius: 20px; font-size: 12px; outline: none; width: 200px; transition: border-color 0.2s; }
+.search-wrap input:focus { border-color: #E53935; }
+.search-wrap input::placeholder { color: #555; }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #555; font-size: 13px; }
+
+/* Task list */
+.tasklist { padding: 16px 24px; }
+.category-block { margin-bottom: 10px; background: #161616; border: 1px solid #2A2A2A; border-radius: 10px; overflow: hidden; }
+.category-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; cursor: pointer; user-select: none; transition: background 0.15s; }
+.category-header:hover { background: #1E1E1E; }
+.cat-left { display: flex; align-items: center; gap: 10px; }
+.cat-chevron { color: #555; font-size: 12px; transition: transform 0.2s; }
+.cat-chevron.open { transform: rotate(90deg); }
+.cat-name { font-size: 15px; font-weight: 600; color: #E0E0E0; text-transform: uppercase; letter-spacing: 0.5px; }
+.cat-progress { font-size: 12px; color: #888; }
+.cat-mini-bar { width: 60px; height: 4px; background: #2A2A2A; border-radius: 2px; overflow: hidden; }
+.cat-mini-fill { height: 100%; background: #E53935; border-radius: 2px; transition: width 0.3s; }
+.cat-right { display: flex; align-items: center; gap: 10px; }
+.tasks-container { border-top: 1px solid #2A2A2A; }
+.task-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #1E1E1E; transition: background 0.1s; cursor: pointer; }
+.task-item:last-child { border-bottom: none; }
+.task-item:hover { background: #1A1A1A; }
+.task-item.done { opacity: 0.45; }
+.task-item.hidden-task { display: none; }
+.task-check { width: 18px; height: 18px; border-radius: 4px; border: 2px solid #3A3A3A; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.task-item.done .task-check { background: #4CAF50; border-color: #4CAF50; }
+.task-check-mark { color: #fff; font-size: 11px; display: none; }
+.task-item.done .task-check-mark { display: block; }
+.task-priority { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.task-text { font-size: 16px; color: #D0D0D0; line-height: 1.4; flex: 1; }
+.task-item.done .task-text { text-decoration: line-through; color: #666; }
+.no-results { text-align: center; color: #555; padding: 40px; font-size: 14px; }
+
+/* Priority colors */
+.p-critical { color: #E53935; }
+.p-important { color: #FF9800; }
+.p-nice { color: #4CAF50; }
+
+@media (max-width: 768px) {
+  header { padding: 12px 16px; gap: 8px; }
+  .logo-text { font-size: 15px; }
+  .logo-sub { display: none; }
+  .progress-bar-wrap { width: 80px; }
+  .btn-print { display: none; }
+  .phase-tabs { padding: 0 16px; }
+  .phase-tab { padding: 12px 12px; font-size: 12px; }
+  .gantt-section { padding: 16px 16px 0; }
+  .phase-card-left { width: 100%; border-right: none; border-bottom: 1px solid #2A2A2A; padding: 14px 16px; }
+  .phase-card-header { flex-direction: column; }
+  .phase-card-right { padding: 12px 16px; }
+  .phase-card-detail.open { grid-template-columns: 1fr; }
+  .phase-detail-col { border-right: none; border-bottom: 1px solid #2A2A2A; padding: 14px 16px; }
+  .phase-detail-col:last-child { border-bottom: none; }
+  .timeline-wrap { padding: 12px 0 16px; }
+  .timeline-axis { margin-left: 80px; }
+  .timeline-row-label { width: 80px; font-size: 10px; }
+  .timeline-axis-item { font-size: 9px; }
+  .filters { padding: 12px 16px; gap: 8px; }
+  .filter-group { gap: 4px; }
+  .filter-btn { padding: 4px 10px; font-size: 11px; }
+  .search-wrap { margin-left: 0; width: 100%; }
+  .search-wrap input { width: 100%; }
+  .tasklist { padding: 12px 16px; }
+  .category-header { padding: 12px 14px; }
+  .cat-name { font-size: 13px; }
+  .task-item { padding: 10px 14px; gap: 10px; }
+  .task-text { font-size: 14px; }
+  .gantt-phase-label { display: none; }
+  body.light .phase-card-left { border-bottom-color: #E0E0E0; }
+  body.light .phase-detail-col { border-bottom-color: #E0E0E0; }
+}
+
+@media print {
+  header, .phase-tabs, .filters, .gantt-section { display: none !important; }
+  body { background: #fff; color: #000; }
+  .category-block { break-inside: avoid; border: 1px solid #ccc; }
+  .task-item { color: #000; }
+  .tasks-container { display: block !important; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🎯</div>
+    <div>
+      <div class="logo-text">AI-Таргетолог</div>
+      <div class="logo-sub">Launch Checklist 0→100</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="total-progress">
+      <span class="progress-label">Прогресс:</span>
+      <span class="progress-count" id="totalCount">0 / 100</span>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="totalBar" style="width:0%"></div>
+      </div>
+      <span style="font-size:12px;color:#666;" id="totalPct">0%</span>
+    </div>
+    <button class="btn-theme" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">☀️</button>
+    <button class="btn-print" onclick="window.print()">🖨 Печать</button>
+    <button class="btn-reset" onclick="resetProgress()">↺ Сброс</button>
+  </div>
+</header>
+
+<div class="phase-tabs">
+  <div class="phase-tab active" data-phase="all" onclick="setPhase('all',this)">Все фазы</div>
+  <div class="phase-tab" data-phase="1" onclick="setPhase('1',this)">Фаза 1: 0→10 клиентов</div>
+  <div class="phase-tab" data-phase="2" onclick="setPhase('2',this)">Фаза 2: 10→50 клиентов</div>
+  <div class="phase-tab" data-phase="3" onclick="setPhase('3',this)">Фаза 3: 50→100 клиентов</div>
+</div>
+
+<div class="gantt-section">
+  <div class="gantt-title">Бизнес-план — Фазовый обзор</div>
+  <div class="gantt-phases">
+
+    <!-- ФАЗА 1 -->
+    <div class="phase-card">
+      <div class="phase-card-header" onclick="togglePhaseDetail(1)">
+        <div class="phase-card-left">
+          <div class="phase-badge ph1">Ф1</div>
+          <div class="phase-card-meta">
+            <div class="phase-card-name">Фаза 1 · Старт и Валидация</div>
+            <div class="phase-card-sub">0 → 10 клиентов · Доказать концепцию</div>
+          </div>
+          <span class="phase-chevron" id="phchev1">▶</span>
+        </div>
+        <div class="phase-card-right">
+          <div class="phase-bar-wrap">
+            <div class="phase-bar-track">
+              <div class="phase-bar-fill" id="gantt1" style="background:#E53935;width:0%"></div>
+            </div>
+            <div class="phase-bar-labels">
+              <span class="phase-bar-label" id="gantt1txt">0 задач выполнено</span>
+              <span class="phase-bar-pct" id="gantt1pct">0%</span>
+            </div>
+          </div>
+          <div class="phase-stat">
+            <div class="phase-stat-num" id="gantt1done">0</div>
+            <div class="phase-stat-total">из 35</div>
+          </div>
+        </div>
+      </div>
+      <div class="phase-card-detail" id="phdetail1">
+        <div class="phase-detail-col">
+          <div class="phase-detail-title">Ключевая цель</div>
+          <div class="phase-detail-text">Продать подписку первым 10 клиентам вручную. Доказать, что люди платят $200/мес за AI-таргетолога — без автоматизации, без команды, на личных продажах.</div>
+        </div>
+        <div class="phase-detail-col">
+          <div class="phase-detail-title">Что нужно сделать</div>
+          <div class="phase-detail-text">
+            <ul>
+              <li>Задокументировать продукт и кейс Mars IT</li>
+              <li>Сформулировать Grand Slam Offer</li>
+              <li>Сделать warm outreach по 30+ контактам</li>
+              <li>Написать скрипт продаж и закрыть первые сделки</li>
+              <li>Настроить получение оплат и базовый договор</li>
+            </ul>
+          </div>
+        </div>
+        <div class="phase-detail-col">
+          <div class="phase-detail-title">Критерий закрытия фазы</div>
+          <div class="phase-detail-text">
+            <ul>
+              <li>10 платящих клиентов активны одновременно</li>
+              <li>MRR ≥ $2,000/мес</li>
+              <li>Получен первый фидбек и понятны главные возражения</li>
+              <li>Churn за 1-й месяц &lt; 20%</li>
+            </ul>
+            <span class="phase-done-badge">✓ Фаза закрыта при 10 клиентах</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ФАЗА 2 -->
+    <div class="phase-card">
+      <div class="phase-card-header" onclick="togglePhaseDetail(2)">
+        <div class="phase-card-left">
+          <div class="phase-badge ph2">Ф2</div>
+          <div class="phase-card-meta">
+            <div class="phase-card-name">Фаза 2 · Рост и Системы</div>
+            <div class="phase-card-sub">10 → 50 клиентов · Автоматизация и масштаб</div>
+          </div>
+          <span class="phase-chevron" id="phchev2">▶</span>
+        </div>
+        <div class="phase-card-right">
+          <div class="phase-bar-wrap">
+            <div class="phase-bar-track">
+              <div class="phase-bar-fill" id="gantt2" style="background:#FF9800;width:0%"></div>
+            </div>
+            <div class="phase-bar-labels">
+              <span class="phase-bar-label" id="gantt2txt">0 задач выполнено</span>
+              <span class="phase-bar-pct" id="gantt2pct">0%</span>
+            </div>
+          </div>
+          <div class="phase-stat">
+            <div class="phase-stat-num" id="gantt2done">0</div>
+            <div class="phase-stat-total">из 36</div>
+          </div>
+        </div>
+      </div>
+      <div class="phase-card-detail" id="phdetail2">
+        <div class="phase-detail-col">
+          <div class="phase-detail-title">Ключевая цель</div>
+          <div class="phase-detail-text">Создать воронку и систему, которая привлекает и обслуживает клиентов без личного участия в каждой сделке. Передать операционку и автоматизировать отчёты.</div>
+        </div>
+        <div class="phase-detail-col">
+          <div class="phase-detail-title">Что нужно сделать</div>
+          <div class="phase-detail-text">
+            <ul>
+              <li>Запустить лендинг + платную рекламу</li>
+              <li>Автоматизировать еженедельные отчёты клиентам</li>
+              <li>Нанять sales-ассистента и VA</li>
+              <li>Ввести 2 тарифа: Basic $150 / Pro $250</li>
+              <li>Настроить CRM-воронку лид→оплата</li>
+            </ul>
+          </div>
+        </div>
+        <div class="phase-detail-col">
+          <div class="phase-detail-title">Критерий закрытия фазы</div>
+          <div class="phase-detail-text">
+            <ul>
+              <li>50 активных платящих клиентов</li>
+              <li>MRR ≥ $9,000/мес</li>
+              <li>Ты не занимаешься каждой сделкой лично</li>
+              <li>CAC окупается за &lt; 2 месяца</li>
+            </ul>
+            <span class="phase-done-badge" style="border-color:rgba(255,152,0,0.3);color:#FF9800;background:rgba(255,152,0,0.1);">✓ Фаза закрыта при 50 клиентах</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ФАЗА 3 -->
+    <div class="phase-card">
+      <div class="phase-card-header" onclick="togglePhaseDetail(3)">
+        <div class="phase-card-left">
+          <div class="phase-badge ph3">Ф3</div>
+          <div class="phase-card-meta">
+            <div class="phase-card-name">Фаза 3 · Доминирование</div>
+            <div class="phase-card-sub">50 → 100 клиентов · Enterprise, White-label, Масштаб</div>
+          </div>
+          <span class="phase-chevron" id="phchev3">▶</span>
+        </div>
+        <div class="phase-card-right">
+          <div class="phase-bar-wrap">
+            <div class="phase-bar-track">
+              <div class="phase-bar-fill" id="gantt3" style="background:#4CAF50;width:0%"></div>
+            </div>
+            <div class="phase-bar-labels">
+              <span class="phase-bar-label" id="gantt3txt">0 задач выполнено</span>
+              <span class="phase-bar-pct" id="gantt3pct">0%</span>
+            </div>
+          </div>
+          <div class="phase-stat">
+            <div class="phase-stat-num" id="gantt3done">0</div>
+            <div class="phase-stat-total">из 29</div>
+          </div>
+        </div>
+      </div>
+      <div class="phase-card-detail" id="phdetail3">
+        <div class="phase-detail-col">
+          <div class="phase-detail-title">Ключевая цель</div>
+          <div class="phase-detail-text">Стать лидером рынка AI-таргетинга в СНГ. Выйти на Enterprise ($500+/мес), запустить White-label для агентств и построить отдел продаж из 2-3 человек.</div>
+        </div>
+        <div class="phase-detail-col">
+          <div class="phase-detail-title">Что нужно сделать</div>
+          <div class="phase-detail-text">
+            <ul>
+              <li>Запустить Enterprise и White-label тарифы</li>
+              <li>Нанять операционного директора</li>
+              <li>Построить отдел продаж 2-3 человека</li>
+              <li>Выйти на Google Ads / TikTok Ads</li>
+              <li>PR: статьи, подкасты, конференции</li>
+            </ul>
+          </div>
+        </div>
+        <div class="phase-detail-col">
+          <div class="phase-detail-title">Критерий закрытия фазы</div>
+          <div class="phase-detail-text">
+            <ul>
+              <li>100 активных клиентов</li>
+              <li>MRR ≥ $20,000/мес</li>
+              <li>Команда 5+ человек, ты — CEO</li>
+              <li>Uptime 99.9%, автоонбординг работает</li>
+            </ul>
+            <span class="phase-done-badge">✓ Фаза закрыта при 100 клиентах</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="gantt-title" style="margin-top:4px;">Таймлайн по категориям</div>
+  <div class="timeline-wrap" id="timelineWrap"></div>
+</div>
+
+<div class="filters">
+  <div class="filter-group">
+    <span class="filter-label">Категория:</span>
+    <button class="filter-btn active" data-cat="all" onclick="setCat('all',this)">Все</button>
+    <button class="filter-btn" data-cat="product" onclick="setCat('product',this)">Продукт</button>
+    <button class="filter-btn" data-cat="offer" onclick="setCat('offer',this)">Оффер</button>
+    <button class="filter-btn" data-cat="marketing" onclick="setCat('marketing',this)">Маркетинг</button>
+    <button class="filter-btn" data-cat="sales" onclick="setCat('sales',this)">Продажи</button>
+    <button class="filter-btn" data-cat="tech" onclick="setCat('tech',this)">Техника</button>
+    <button class="filter-btn" data-cat="legal" onclick="setCat('legal',this)">Юридика</button>
+    <button class="filter-btn" data-cat="finance" onclick="setCat('finance',this)">Финансы</button>
+    <button class="filter-btn" data-cat="team" onclick="setCat('team',this)">Команда</button>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Приоритет:</span>
+    <button class="filter-btn active" data-pri="all" onclick="setPri('all',this)">Все</button>
+    <button class="filter-btn" data-pri="critical" onclick="setPri('critical',this)">🔴 Критично</button>
+    <button class="filter-btn priority-important" data-pri="important" onclick="setPri('important',this)">🟡 Важно</button>
+    <button class="filter-btn priority-nice" data-pri="nice" onclick="setPri('nice',this)">🟢 Желательно</button>
+  </div>
+  <button class="hide-done-btn" id="hideDoneBtn" onclick="toggleHideDone()">Скрыть выполненные</button>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="Поиск задачи..." oninput="applyFilters()" id="searchInput">
+  </div>
+</div>
+
+<div class="tasklist" id="tasklist"></div>
+
+<script>
+const TASKS = [
+  // ─── ФАЗА 1: ПРОДУКТ ───
+  {id:'p1_prod_1', phase:'1', cat:'product', pri:'critical', text:'Сформулировать ценностное предложение: для кого, какой результат, за счёт чего'},
+  {id:'p1_prod_2', phase:'1', cat:'product', pri:'critical', text:'Провести 10 проблемных интервью с маркетологами IT-школ по методу JTBD'},
+  {id:'p1_prod_3', phase:'1', cat:'product', pri:'critical', text:'Зафиксировать топ-5 болей аудитории и основные возражения по итогам интервью'},
+  {id:'p1_prod_4', phase:'1', cat:'product', pri:'critical', text:'Оформить кейс Mars IT в цифрах: CPL до/после, ROAS, потраченный бюджет'},
+  {id:'p1_prod_5', phase:'1', cat:'product', pri:'critical', text:'Написать инструкцию по подключению клиента: как дать доступ к рекламному кабинету'},
+  {id:'p1_prod_6', phase:'1', cat:'product', pri:'critical', text:'Составить онбординг-чеклист для нового клиента (первые 48 часов)'},
+  {id:'p1_prod_7', phase:'1', cat:'product', pri:'important', text:'Описать SLA: что входит и не входит в подписку $200/мес'},
+  {id:'p1_prod_8', phase:'1', cat:'product', pri:'important', text:'Создать шаблон еженедельного отчёта для клиента (метрики + выводы + следующий шаг)'},
+
+  // ─── ФАЗА 1: ОФФЕР ───
+  {id:'p1_off_1', phase:'1', cat:'offer', pri:'critical', text:'Сформулировать Grand Slam Offer по Хормози: результат + гарантия + бонусы'},
+  {id:'p1_off_2', phase:'1', cat:'offer', pri:'critical', text:'Обосновать цену $200/мес через сравнение: таргетолог ($800) vs агентство ($1500) vs AI ($200)'},
+  {id:'p1_off_3', phase:'1', cat:'offer', pri:'critical', text:'Прописать гарантию: снизим CPL на 30% за 30 дней или вернём деньги'},
+  {id:'p1_off_4', phase:'1', cat:'offer', pri:'important', text:'Подготовить сравнительную таблицу: AI-таргетолог vs штатный специалист vs агентство'},
+  {id:'p1_off_5', phase:'1', cat:'offer', pri:'important', text:'Написать одностраничный pitch-deck (PDF) для отправки в мессенджерах'},
+  {id:'p1_off_6', phase:'1', cat:'offer', pri:'nice', text:'Разработать ROI-калькулятор: клиент вводит бюджет → видит прогноз экономии'},
+
+  // ─── ФАЗА 1: МАРКЕТИНГ ───
+  {id:'p1_mkt_1', phase:'1', cat:'marketing', pri:'critical', text:'Составить список 50 целевых IT-школ и edtech-проектов СНГ с контактами ЛПР'},
+  {id:'p1_mkt_2', phase:'1', cat:'marketing', pri:'critical', text:'Написать 3 варианта холодного сообщения для outreach (A/B тест по откликам)'},
+  {id:'p1_mkt_3', phase:'1', cat:'marketing', pri:'critical', text:'Провести 20 персональных outreach-контактов в неделю через Telegram и LinkedIn'},
+  {id:'p1_mkt_4', phase:'1', cat:'marketing', pri:'important', text:'Опубликовать 10 прогревающих постов в Telegram до первой продажи'},
+  {id:'p1_mkt_5', phase:'1', cat:'marketing', pri:'important', text:'Оформить PDF-кейс Mars IT для отправки на диагностических встречах'},
+  {id:'p1_mkt_6', phase:'1', cat:'marketing', pri:'important', text:'Разместить кейс в 3 профильных Telegram-чатах маркетологов СНГ'},
+  {id:'p1_mkt_7', phase:'1', cat:'marketing', pri:'nice', text:'Снять видео-кейс 5 минут: проблема Mars IT → решение AI → результаты'},
+
+  // ─── ФАЗА 1: ПРОДАЖИ ───
+  {id:'p1_sal_1', phase:'1', cat:'sales', pri:'critical', text:'Разработать скрипт демо-звонка 30 минут: боли → демо → оффер → закрытие'},
+  {id:'p1_sal_2', phase:'1', cat:'sales', pri:'critical', text:'Провести минимум 10 диагностических встреч и записать все возражения'},
+  {id:'p1_sal_3', phase:'1', cat:'sales', pri:'critical', text:'Настроить CRM в Notion: этапы воронки, поля сделки, pipeline-вид'},
+  {id:'p1_sal_4', phase:'1', cat:'sales', pri:'critical', text:'Настроить приём регулярных платежей $200/мес (карта, Telegram Stars, криптo)'},
+  {id:'p1_sal_5', phase:'1', cat:'sales', pri:'critical', text:'Закрыть первых 3 платящих клиента (допустима скидка $100/мес для первых)'},
+  {id:'p1_sal_6', phase:'1', cat:'sales', pri:'important', text:'Прописать ответы на топ-10 возражений: дорого, уже есть таргетолог, не доверяю AI'},
+  {id:'p1_sal_7', phase:'1', cat:'sales', pri:'important', text:'Настроить follow-up последовательность на 5 дней после демо'},
+
+  // ─── ФАЗА 1: ЮРИДИКА ───
+  {id:'p1_leg_1', phase:'1', cat:'legal', pri:'critical', text:'Зарегистрировать ИП или ООО для официального приёма платежей'},
+  {id:'p1_leg_2', phase:'1', cat:'legal', pri:'critical', text:'Разработать договор оказания услуг с описанием SLA и границ ответственности'},
+  {id:'p1_leg_3', phase:'1', cat:'legal', pri:'important', text:'Подготовить шаблон NDA для клиентов, которые дают доступ к кабинетам'},
+  {id:'p1_leg_4', phase:'1', cat:'legal', pri:'nice', text:'Проконсультироваться с юристом по договору и рискам'},
+
+  // ─── ФАЗА 1: ТЕХНИКА ───
+  {id:'p1_tec_1', phase:'1', cat:'tech', pri:'critical', text:'Протестировать AI-агента на 3 реальных рекламных кабинетах и зафиксировать баги'},
+  {id:'p1_tec_2', phase:'1', cat:'tech', pri:'critical', text:'Описать и задокументировать процесс получения доступа к кабинету клиента'},
+  {id:'p1_tec_3', phase:'1', cat:'tech', pri:'important', text:'Создать шаблон начальной настройки рекламных кампаний для нового клиента'},
+  {id:'p1_tec_4', phase:'1', cat:'tech', pri:'important', text:'Настроить Telegram-уведомления для себя при аномалиях CPL у клиентов'},
+
+  // ─── ФАЗА 1: ФИНАНСЫ ───
+  {id:'p1_fin_1', phase:'1', cat:'finance', pri:'critical', text:'Рассчитать unit economics: CAC, LTV, payback period, точка безубыточности'},
+  {id:'p1_fin_2', phase:'1', cat:'finance', pri:'critical', text:'Создать шаблон инвойса/счёта для выставления клиентам'},
+  {id:'p1_fin_3', phase:'1', cat:'finance', pri:'important', text:'Построить финансовую модель на 12 месяцев: 3 сценария (10/30/50 клиентов)'},
+
+  // ─── ФАЗА 2: ПРОДУКТ ───
+  {id:'p2_prod_1', phase:'2', cat:'product', pri:'critical', text:'Собрать и приоритизировать фидбек от первых 10 клиентов (интервью + топ-10 запросов)'},
+  {id:'p2_prod_2', phase:'2', cat:'product', pri:'critical', text:'Автоматизировать отправку еженедельных отчётов без ручного труда'},
+  {id:'p2_prod_3', phase:'2', cat:'product', pri:'critical', text:'Настроить систему алертов: CPL вышел за порог → автоматическое уведомление клиенту'},
+  {id:'p2_prod_4', phase:'2', cat:'product', pri:'critical', text:'Запустить два тарифа: Basic $150/мес и Pro $250/мес с чёткими отличиями'},
+  {id:'p2_prod_5', phase:'2', cat:'product', pri:'critical', text:'Создать онбординг-флоу: клиент сам подключает кабинет за 10 минут без помощи'},
+  {id:'p2_prod_6', phase:'2', cat:'product', pri:'important', text:'Написать SOP-документы для каждого повторяющегося процесса в Notion'},
+  {id:'p2_prod_7', phase:'2', cat:'product', pri:'important', text:'Провести UX-аудит продукта с 5 реальными пользователями и устранить узкие места'},
+  {id:'p2_prod_8', phase:'2', cat:'product', pri:'nice', text:'Добавить поддержку Google Ads API в дополнение к Facebook Ads'},
+
+  // ─── ФАЗА 2: ОФФЕР ───
+  {id:'p2_off_1', phase:'2', cat:'offer', pri:'critical', text:'Обновить Grand Slam Offer на основе фидбека первых 10 клиентов'},
+  {id:'p2_off_2', phase:'2', cat:'offer', pri:'important', text:'Запустить реферальную программу: $50 за каждого привлечённого клиента'},
+  {id:'p2_off_3', phase:'2', cat:'offer', pri:'important', text:'Написать 3 полных кейс-стади с цифрами: проблема → решение → результат'},
+  {id:'p2_off_4', phase:'2', cat:'offer', pri:'nice', text:'Запустить годовую подписку со скидкой 20% для снижения ежемесячного оттока'},
+
+  // ─── ФАЗА 2: МАРКЕТИНГ ───
+  {id:'p2_mkt_1', phase:'2', cat:'marketing', pri:'critical', text:'Создать лендинг-сайт с оффером, кейсами и формой заявки (Tilda/Webflow)'},
+  {id:'p2_mkt_2', phase:'2', cat:'marketing', pri:'critical', text:'Запустить платную рекламу Facebook/Instagram с бюджетом $500/мес, цель — лиды'},
+  {id:'p2_mkt_3', phase:'2', cat:'marketing', pri:'critical', text:'Выстроить контент-план для личного бренда: 3 поста/нед в Telegram'},
+  {id:'p2_mkt_4', phase:'2', cat:'marketing', pri:'critical', text:'Опубликовать 3 кейс-стади на vc.ru и в Telegram-каналах маркетологов СНГ'},
+  {id:'p2_mkt_5', phase:'2', cat:'marketing', pri:'important', text:'Запустить лид-магнит: бесплатный аудит Facebook Ads за 24 часа'},
+  {id:'p2_mkt_6', phase:'2', cat:'marketing', pri:'important', text:'Настроить email-рассылку: серия из 7 писем после заявки (nurture sequence)'},
+  {id:'p2_mkt_7', phase:'2', cat:'marketing', pri:'important', text:'Вырастить Telegram-канал до 1000 подписчиков через коллаборации'},
+  {id:'p2_mkt_8', phase:'2', cat:'marketing', pri:'nice', text:'Провести вебинар «Как снизить CPL вдвое с AI» для 100+ участников'},
+
+  // ─── ФАЗА 2: ПРОДАЖИ ───
+  {id:'p2_sal_1', phase:'2', cat:'sales', pri:'critical', text:'Нанять sales-ассистента для outreach и первичной обработки лидов'},
+  {id:'p2_sal_2', phase:'2', cat:'sales', pri:'critical', text:'Внедрить полноценную CRM (HubSpot Free/Pipedrive) и перенести все сделки'},
+  {id:'p2_sal_3', phase:'2', cat:'sales', pri:'critical', text:'Выстроить автоматизированную воронку: лид → демо → пилот → оплата с SLA на каждый этап'},
+  {id:'p2_sal_4', phase:'2', cat:'sales', pri:'important', text:'Написать playbook продаж: скрипты, шаблоны писем, ответы на возражения для ассистента'},
+  {id:'p2_sal_5', phase:'2', cat:'sales', pri:'important', text:'Провести NPS-опрос всех клиентов после 30 дней и устранить топ-3 проблемы'},
+  {id:'p2_sal_6', phase:'2', cat:'sales', pri:'nice', text:'Подписать партнёрское соглашение с 3 маркетинговыми агентствами на реферралы'},
+
+  // ─── ФАЗА 2: ТЕХНИКА ───
+  {id:'p2_tec_1', phase:'2', cat:'tech', pri:'critical', text:'Перевести инфраструктуру на облако с автомасштабированием (AWS или GCP)'},
+  {id:'p2_tec_2', phase:'2', cat:'tech', pri:'critical', text:'Настроить автоматическую систему биллинга: выставление счетов и списание карт'},
+  {id:'p2_tec_3', phase:'2', cat:'tech', pri:'critical', text:'Настроить ежедневные автоматические бэкапы данных всех клиентов'},
+  {id:'p2_tec_4', phase:'2', cat:'tech', pri:'important', text:'Внедрить продуктовую аналитику (Mixpanel/Amplitude): трекинг ключевых событий'},
+  {id:'p2_tec_5', phase:'2', cat:'tech', pri:'important', text:'Провести нагрузочное тестирование системы на 50 одновременных клиентов'},
+
+  // ─── ФАЗА 2: КОМАНДА ───
+  {id:'p2_team_1', phase:'2', cat:'team', pri:'critical', text:'Нанять backend-разработчика для развития продукта (full-time или контракт)'},
+  {id:'p2_team_2', phase:'2', cat:'team', pri:'critical', text:'Нанять Customer Success менеджера для онбординга и удержания клиентов'},
+  {id:'p2_team_3', phase:'2', cat:'team', pri:'important', text:'Описать все операционные процессы в Notion: кто, что и когда делает'},
+  {id:'p2_team_4', phase:'2', cat:'team', pri:'nice', text:'Выстроить систему мотивации команды: бонусы привязаны к росту MRR'},
+
+  // ─── ФАЗА 2: ФИНАНСЫ ───
+  {id:'p2_fin_1', phase:'2', cat:'finance', pri:'critical', text:'Настроить управленческий учёт: P&L, Cash Flow и MRR/ARR дашборд (еженедельно)'},
+  {id:'p2_fin_2', phase:'2', cat:'finance', pri:'critical', text:'Открыть расчётный счёт для официального приёма валютных платежей'},
+  {id:'p2_fin_3', phase:'2', cat:'finance', pri:'important', text:'Рассчитать и зафиксировать CAC, LTV, LTV/CAC ratio и payback period'},
+  {id:'p2_fin_4', phase:'2', cat:'finance', pri:'important', text:'Составить реинвестиционный план: распределение выручки между ростом и резервом'},
+
+  // ─── ФАЗА 3: ПРОДУКТ ───
+  {id:'p3_prod_1', phase:'3', cat:'product', pri:'critical', text:'Разработать и запустить White-label режим: агентства используют продукт под своим брендом'},
+  {id:'p3_prod_2', phase:'3', cat:'product', pri:'critical', text:'Реализовать Enterprise-функции: SSO, расширенные роли доступа, выгрузка данных'},
+  {id:'p3_prod_3', phase:'3', cat:'product', pri:'critical', text:'Добавить поддержку TikTok Ads API и Google Ads для расширения охвата'},
+  {id:'p3_prod_4', phase:'3', cat:'product', pri:'important', text:'Построить модуль бенчмаркинга: показать клиенту его CPL vs средний по индустрии'},
+  {id:'p3_prod_5', phase:'3', cat:'product', pri:'nice', text:'Разработать мобильное PWA-приложение для просмотра ключевых метрик'},
+
+  // ─── ФАЗА 3: ОФФЕР ───
+  {id:'p3_off_1', phase:'3', cat:'offer', pri:'critical', text:'Разработать Enterprise-тариф: кастомный SLA, выделенный менеджер, цена от $500/мес'},
+  {id:'p3_off_2', phase:'3', cat:'offer', pri:'critical', text:'Запустить Agency Partner Program: агентства перепродают продукт под своим брендом'},
+  {id:'p3_off_3', phase:'3', cat:'offer', pri:'important', text:'Обновить Grand Slam Offer с кейсами 50+ клиентов и новыми гарантиями'},
+
+  // ─── ФАЗА 3: МАРКЕТИНГ ───
+  {id:'p3_mkt_1', phase:'3', cat:'marketing', pri:'critical', text:'Запустить PR-кампанию: попасть в топ-3 профильных медиа СНГ (vc.ru, Habr, Ain.ua)'},
+  {id:'p3_mkt_2', phase:'3', cat:'marketing', pri:'critical', text:'Выступить на 3 профильных конференциях по EdTech и digital-маркетингу в СНГ'},
+  {id:'p3_mkt_3', phase:'3', cat:'marketing', pri:'critical', text:'Выстроить партнёрский маркетинг: интеграции с 10 смежными SaaS-продуктами для школ'},
+  {id:'p3_mkt_4', phase:'3', cat:'marketing', pri:'important', text:'Запустить подкаст или YouTube-шоу о маркетинге в EdTech (12 эпизодов)'},
+  {id:'p3_mkt_5', phase:'3', cat:'marketing', pri:'nice', text:'Локализовать продукт и запустить выход на рынки MENA и Турции'},
+
+  // ─── ФАЗА 3: ПРОДАЖИ ───
+  {id:'p3_sal_1', phase:'3', cat:'sales', pri:'critical', text:'Нанять Head of Sales и выстроить отдел продаж из 2-3 менеджеров'},
+  {id:'p3_sal_2', phase:'3', cat:'sales', pri:'critical', text:'Внедрить систему предотвращения оттока: health score клиента + триггеры для CS-команды'},
+  {id:'p3_sal_3', phase:'3', cat:'sales', pri:'important', text:'Запустить программу upsell/cross-sell: апгрейды тарифа и дополнительные услуги'},
+  {id:'p3_sal_4', phase:'3', cat:'sales', pri:'important', text:'Провести ежеквартальные бизнес-ревью (QBR) с топ-20 клиентами'},
+
+  // ─── ФАЗА 3: КОМАНДА ───
+  {id:'p3_team_1', phase:'3', cat:'team', pri:'critical', text:'Нанять CTO или Lead Architect для проектирования масштабируемой инфраструктуры'},
+  {id:'p3_team_2', phase:'3', cat:'team', pri:'critical', text:'Нанять операционного директора для управления процессами и командой'},
+  {id:'p3_team_3', phase:'3', cat:'team', pri:'critical', text:'Выстроить HR-процессы: онбординг сотрудников, грейды, performance review'},
+  {id:'p3_team_4', phase:'3', cat:'team', pri:'important', text:'Нанять Head of Customer Success для управления клиентским опытом'},
+  {id:'p3_team_5', phase:'3', cat:'team', pri:'important', text:'Провести стратегическую сессию топ-команды: 2-летняя roadmap и vision'},
+
+  // ─── ФАЗА 3: ТЕХНИКА ───
+  {id:'p3_tec_1', phase:'3', cat:'tech', pri:'critical', text:'Провести аудит безопасности (penetration testing) перед первыми Enterprise-сделками'},
+  {id:'p3_tec_2', phase:'3', cat:'tech', pri:'critical', text:'Обеспечить 99.9% uptime: мультирегиональный деплой, CDN, автоматический failover'},
+  {id:'p3_tec_3', phase:'3', cat:'tech', pri:'important', text:'Выстроить CI/CD pipeline с автотестами и zero-downtime деплоем'},
+  {id:'p3_tec_4', phase:'3', cat:'tech', pri:'important', text:'Реализовать открытый API с документацией Swagger для интеграций клиентов'},
+  {id:'p3_tec_5', phase:'3', cat:'tech', pri:'nice', text:'Пройти сертификацию ISO 27001 или SOC 2 Type I для закрытия Enterprise-сделок'},
+
+  // ─── ФАЗА 3: ФИНАНСЫ ───
+  {id:'p3_fin_1', phase:'3', cat:'finance', pri:'critical', text:'Подготовить инвестиционный меморандум для привлечения seed-раунда $200-500K'},
+  {id:'p3_fin_2', phase:'3', cat:'finance', pri:'critical', text:'Построить финансовую модель на 3 года: три сценария base/bear/bull'},
+  {id:'p3_fin_3', phase:'3', cat:'finance', pri:'important', text:'Провести оценку компании методом SaaS-мультипликаторов (ARR × N) для инвесторов'},
+];
+
+const CATEGORIES = [
+  {key:'product', label:'Продукт'},
+  {key:'offer', label:'Оффер'},
+  {key:'marketing', label:'Маркетинг'},
+  {key:'sales', label:'Продажи'},
+  {key:'tech', label:'Техника'},
+  {key:'legal', label:'Юридика'},
+  {key:'finance', label:'Финансы'},
+  {key:'team', label:'Команда'},
+];
+
+const PRI_ICON = {critical:'🔴', important:'🟡', nice:'🟢'};
+const PRI_CLASS = {critical:'p-critical', important:'p-important', nice:'p-nice'};
+
+let done = JSON.parse(localStorage.getItem('ai_targ_done') || '{}');
+let currentPhase = 'all';
+let currentCat = 'all';
+let currentPri = 'all';
+let hideDone = false;
+let openCats = {};
+
+// Gantt weekly map: category → [w1,w2,w3,w4,w5,w6,w7,w8,w9,w10,w11,w12] where value = phase
+// Timeline: start week (0-based) and duration in weeks out of 20 total weeks
+// [ph1_start, ph1_dur, ph2_start, ph2_dur, ph3_start, ph3_dur]
+const TIMELINE_MAP = {
+  product:   [0, 4,  4, 4,  10, 6],
+  offer:     [0, 3,  5, 3,  11, 5],
+  marketing: [1, 3,  4, 5,  10, 6],
+  sales:     [0, 4,  4, 4,  11, 5],
+  tech:      [0, 3,  5, 4,  11, 5],
+  legal:     [0, 3,  0, 0,   0, 0],
+  finance:   [0, 2,  5, 3,  11, 4],
+  team:      [0, 0,  5, 4,  11, 5],
+};
+const TOTAL_WEEKS = 20;
+const WEEK_LABELS = ['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12','W13','W14','W15','W16','W17','W18','W19','W20'];
+
+function buildTimeline() {
+  const wrap = document.getElementById('timelineWrap');
+  wrap.innerHTML = '';
+
+  // Axis
+  const axisRow = document.createElement('div');
+  axisRow.className = 'timeline-axis';
+  WEEK_LABELS.forEach(w => {
+    const item = document.createElement('div');
+    item.className = 'timeline-axis-item';
+    item.textContent = w;
+    axisRow.appendChild(item);
+  });
+  wrap.appendChild(axisRow);
+
+  // Rows
+  const rows = document.createElement('div');
+  rows.className = 'timeline-rows';
+
+  CATEGORIES.forEach(cat => {
+    const map = TIMELINE_MAP[cat.key] || [0,0,0,0,0,0];
+    const row = document.createElement('div');
+    row.className = 'timeline-row';
+
+    const label = document.createElement('div');
+    label.className = 'timeline-row-label';
+    label.textContent = cat.label;
+    row.appendChild(label);
+
+    const track = document.createElement('div');
+    track.className = 'timeline-row-track';
+
+    const addSeg = (start, dur, cls) => {
+      if (!dur) return;
+      const seg = document.createElement('div');
+      seg.className = 'timeline-segment ' + cls;
+      seg.style.left = (start / TOTAL_WEEKS * 100) + '%';
+      seg.style.width = (dur / TOTAL_WEEKS * 100) + '%';
+      track.appendChild(seg);
+    };
+
+    addSeg(map[0], map[1], 'timeline-seg-ph1');
+    addSeg(map[2], map[3], 'timeline-seg-ph2');
+    addSeg(map[4], map[5], 'timeline-seg-ph3');
+
+    row.appendChild(track);
+    rows.appendChild(row);
+  });
+
+  wrap.appendChild(rows);
+}
+
+function saveDone() {
+  localStorage.setItem('ai_targ_done', JSON.stringify(done));
+}
+
+function toggleTask(id) {
+  done[id] = !done[id];
+  if (!done[id]) delete done[id];
+  saveDone();
+  renderAll();
+}
+
+function updateProgress() {
+  const total = TASKS.length;
+  const totalDone = TASKS.filter(t => done[t.id]).length;
+  document.getElementById('totalCount').textContent = `${totalDone} / ${total}`;
+  const pct = Math.round(totalDone / total * 100);
+  document.getElementById('totalBar').style.width = pct + '%';
+  document.getElementById('totalPct').textContent = pct + '%';
+
+  // Phase bars
+  [1,2,3].forEach(ph => {
+    const phTasks = TASKS.filter(t => t.phase === String(ph));
+    const phDone = phTasks.filter(t => done[t.id]).length;
+    const phPct = phTasks.length ? Math.round(phDone / phTasks.length * 100) : 0;
+    const bar = document.getElementById('gantt' + ph);
+    bar.style.width = phPct + '%';
+    document.getElementById('gantt' + ph + 'txt').textContent = `${phDone} задач выполнено`;
+    document.getElementById('gantt' + ph + 'pct').textContent = phPct + '%';
+    document.getElementById('gantt' + ph + 'done').textContent = phDone;
+  });
+}
+
+function getVisibleTasks() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  return TASKS.filter(t => {
+    if (currentPhase !== 'all' && t.phase !== currentPhase) return false;
+    if (currentCat !== 'all' && t.cat !== currentCat) return false;
+    if (currentPri !== 'all' && t.pri !== currentPri) return false;
+    if (hideDone && done[t.id]) return false;
+    if (search && !t.text.toLowerCase().includes(search)) return false;
+    return true;
+  });
+}
+
+function renderAll() {
+  updateProgress();
+  const visible = getVisibleTasks();
+  const container = document.getElementById('tasklist');
+  container.innerHTML = '';
+
+  if (visible.length === 0) {
+    container.innerHTML = '<div class="no-results">Задачи не найдены</div>';
+    return;
+  }
+
+  // Group by category
+  CATEGORIES.forEach(cat => {
+    const catTasks = visible.filter(t => t.cat === cat.key);
+    if (catTasks.length === 0) return;
+
+    const block = document.createElement('div');
+    block.className = 'category-block';
+
+    const allCatTasks = TASKS.filter(t => {
+      if (currentPhase !== 'all' && t.phase !== currentPhase) return false;
+      return t.cat === cat.key;
+    });
+    const doneCat = allCatTasks.filter(t => done[t.id]).length;
+    const totalCat = allCatTasks.length;
+    const pctCat = totalCat ? Math.round(doneCat / totalCat * 100) : 0;
+
+    const isOpen = openCats[cat.key] !== false;
+
+    block.innerHTML = `
+      <div class="category-header" onclick="toggleCat('${cat.key}')">
+        <div class="cat-left">
+          <span class="cat-chevron ${isOpen ? 'open' : ''}" id="chev_${cat.key}">▶</span>
+          <span class="cat-name">${cat.label}</span>
+          <span class="cat-progress">${doneCat} / ${totalCat}</span>
+        </div>
+        <div class="cat-right">
+          <div class="cat-mini-bar">
+            <div class="cat-mini-fill" style="width:${pctCat}%"></div>
+          </div>
+          <span style="font-size:11px;color:#666;">${pctCat}%</span>
+        </div>
+      </div>
+      <div class="tasks-container" id="tasks_${cat.key}" style="display:${isOpen ? 'block' : 'none'}"></div>
+    `;
+
+    container.appendChild(block);
+
+    const tasksEl = block.querySelector(`#tasks_${cat.key}`);
+    catTasks.forEach(t => {
+      const item = document.createElement('div');
+      item.className = 'task-item' + (done[t.id] ? ' done' : '');
+      item.onclick = () => toggleTask(t.id);
+      item.innerHTML = `
+        <div class="task-check"><span class="task-check-mark">✓</span></div>
+        <span class="task-priority">${PRI_ICON[t.pri]}</span>
+        <span class="task-text">${t.text}</span>
+        <span style="font-size:10px;color:#444;flex-shrink:0;">Ф${t.phase}</span>
+      `;
+      tasksEl.appendChild(item);
+    });
+  });
+}
+
+function toggleCat(key) {
+  openCats[key] = openCats[key] === false ? true : false;
+  const el = document.getElementById('tasks_' + key);
+  const chev = document.getElementById('chev_' + key);
+  if (el) el.style.display = openCats[key] === false ? 'none' : 'block';
+  if (chev) chev.classList.toggle('open', openCats[key] !== false);
+}
+
+function setPhase(phase, btn) {
+  currentPhase = phase;
+  document.querySelectorAll('.phase-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function setCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function setPri(pri, btn) {
+  currentPri = pri;
+  document.querySelectorAll('[data-pri]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function toggleHideDone() {
+  hideDone = !hideDone;
+  document.getElementById('hideDoneBtn').classList.toggle('active', hideDone);
+  renderAll();
+}
+
+function applyFilters() {
+  renderAll();
+}
+
+function resetProgress() {
+  if (confirm('Сбросить весь прогресс? Это действие нельзя отменить.')) {
+    done = {};
+    saveDone();
+    renderAll();
+  }
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀️';
+  localStorage.setItem('ai_targ_theme', isLight ? 'light' : 'dark');
+}
+// restore saved theme
+if (localStorage.getItem('ai_targ_theme') === 'light') {
+  document.body.classList.add('light');
+  document.getElementById('themeBtn').textContent = '🌙';
+}
+
+function togglePhaseDetail(ph) {
+  const detail = document.getElementById('phdetail' + ph);
+  const chev = document.getElementById('phchev' + ph);
+  const isOpen = detail.classList.contains('open');
+  detail.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+
+buildTimeline();
+renderAll();
+</script>
+</body>
+</html>
