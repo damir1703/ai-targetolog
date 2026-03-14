@@ -150,6 +150,42 @@ body.light .timeline-row-track { background: #F0F0F0; }
 body.light .timeline-divider { background: #DDD; }
 body.light .timeline-phase-label { color: #BBB; }
 
+/* Product Radar */
+.radar-section { border-bottom: 1px solid #2A2A2A; background: #0D0D0D; }
+.radar-section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; cursor: pointer; user-select: none; }
+.radar-section-header:hover { background: #111; }
+.radar-section-title { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+.radar-section-chevron { font-size: 11px; color: #555; transition: transform 0.25s; }
+.radar-section-chevron.open { transform: rotate(90deg); }
+.radar-body { display: none; padding: 0 24px 28px; }
+.radar-body.open { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+.radar-canvas-wrap { flex: 0 0 320px; position: relative; }
+.radar-canvas-wrap canvas { width: 100%; height: 100%; display: block; }
+.radar-scores { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
+.radar-score-row { display: flex; align-items: center; gap: 10px; }
+.radar-score-label { font-size: 12px; color: #888; width: 90px; flex-shrink: 0; }
+.radar-score-track { flex: 1; height: 6px; background: #2A2A2A; border-radius: 3px; overflow: hidden; }
+.radar-score-fill { height: 100%; border-radius: 3px; background: #E53935; transition: width 0.4s ease; }
+.radar-score-val { font-size: 12px; font-weight: 700; color: #E0E0E0; width: 36px; text-align: right; flex-shrink: 0; }
+.radar-avg { margin-top: 12px; padding: 12px 14px; background: #161616; border: 1px solid #2A2A2A; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+.radar-avg-label { font-size: 12px; color: #666; }
+.radar-avg-val { font-size: 22px; font-weight: 800; color: #E53935; }
+
+body.light .radar-section { background: #F5F5F5; }
+body.light .radar-section-header:hover { background: #EEEEEE; }
+body.light .radar-score-label { color: #AAA; }
+body.light .radar-score-track { background: #E0E0E0; }
+body.light .radar-score-val { color: #333; }
+body.light .radar-avg { background: #FFF; border-color: #E0E0E0; }
+body.light .radar-avg-label { color: #AAA; }
+
+@media (max-width: 768px) {
+  .radar-canvas-wrap { flex: 0 0 100%; }
+  .radar-body.open { flex-direction: column; gap: 16px; }
+  .radar-section-header { padding: 14px 16px; }
+  .radar-body { padding: 0 16px 20px; }
+}
+
 /* Filters */
 .filters { padding: 16px 24px; border-bottom: 1px solid #2A2A2A; background: #0D0D0D; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .filter-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -464,6 +500,25 @@ body.light .timeline-phase-label { color: #BBB; }
   <div class="timeline-wrap" id="timelineWrap"></div>
 </div>
 
+<div class="radar-section">
+  <div class="radar-section-header" onclick="toggleRadarSection()">
+    <span class="radar-section-title">🎯 Радар Продукта — здоровье по категориям</span>
+    <span class="radar-section-chevron" id="radarChev">▶</span>
+  </div>
+  <div class="radar-body" id="radarBody">
+    <div class="radar-canvas-wrap" id="radarCanvasWrap">
+      <canvas id="radarCanvas"></canvas>
+    </div>
+    <div class="radar-scores">
+      <div id="radarScoresList"></div>
+      <div class="radar-avg">
+        <span class="radar-avg-label">Средний прогресс</span>
+        <span class="radar-avg-val" id="radarAvg">0%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="filters">
   <div class="filter-group">
     <span class="filter-label">Категория:</span>
@@ -668,6 +723,194 @@ let hideDone = false;
 let openCats = {};
 
 // Gantt weekly map: category → [w1,w2,w3,w4,w5,w6,w7,w8,w9,w10,w11,w12] where value = phase
+// ─── PRODUCT RADAR ───
+const CAT_COLORS = {
+  product:'#E53935', offer:'#FF9800', marketing:'#2196F3',
+  sales:'#9C27B0', tech:'#00BCD4', legal:'#FF5722',
+  finance:'#4CAF50', team:'#FFC107'
+};
+const CAT_LABELS = {
+  product:'Продукт', offer:'Оффер', marketing:'Маркетинг',
+  sales:'Продажи', tech:'Техника', legal:'Юридика',
+  finance:'Финансы', team:'Команда'
+};
+const CAT_EMOJIS = {
+  product:'📦', offer:'🎯', marketing:'📣',
+  sales:'💰', tech:'⚙️', legal:'📄',
+  finance:'💵', team:'👥'
+};
+
+let radarAnimCurrent = {};
+let radarAnimTarget  = {};
+let radarAnimFrame   = null;
+let radarOpen = false;
+
+function toggleRadarSection() {
+  radarOpen = !radarOpen;
+  document.getElementById('radarBody').classList.toggle('open', radarOpen);
+  document.getElementById('radarChev').classList.toggle('open', radarOpen);
+  if (radarOpen) { setTimeout(resizeRadar, 50); }
+}
+
+function getRadarScores(phase) {
+  const scores = {};
+  CATEGORIES.forEach(cat => {
+    const tasks = TASKS.filter(t => t.cat === cat.key &&
+      (phase === 'all' || t.phase === phase));
+    scores[cat.key] = tasks.length ? Math.round(tasks.filter(t => done[t.id]).length / tasks.length * 10) : 0;
+  });
+  return scores;
+}
+
+function updateRadar() {
+  if (!radarOpen) return;
+  const scores = getRadarScores(currentPhase);
+
+  // Score rows
+  const list = document.getElementById('radarScoresList');
+  list.innerHTML = '';
+  let total = 0;
+  CATEGORIES.forEach(cat => {
+    const s = scores[cat.key];
+    total += s;
+    const color = CAT_COLORS[cat.key];
+    const row = document.createElement('div');
+    row.className = 'radar-score-row';
+    row.innerHTML = `
+      <span class="radar-score-label">${CAT_EMOJIS[cat.key]} ${CAT_LABELS[cat.key]}</span>
+      <div class="radar-score-track"><div class="radar-score-fill" style="width:${s*10}%;background:${color}"></div></div>
+      <span class="radar-score-val" style="color:${color}">${s}/10</span>
+    `;
+    list.appendChild(row);
+  });
+  const avg = Math.round(total / CATEGORIES.length * 10);
+  document.getElementById('radarAvg').textContent = avg + '%';
+
+  // Animate
+  CATEGORIES.forEach(cat => { radarAnimTarget[cat.key] = scores[cat.key]; });
+  if (!radarAnimFrame) animateRadar();
+}
+
+function animateRadar() {
+  let settled = true;
+  CATEGORIES.forEach(cat => {
+    const diff = radarAnimTarget[cat.key] - (radarAnimCurrent[cat.key] || 0);
+    if (Math.abs(diff) < 0.05) {
+      radarAnimCurrent[cat.key] = radarAnimTarget[cat.key];
+    } else {
+      radarAnimCurrent[cat.key] = (radarAnimCurrent[cat.key] || 0) + diff * 0.15;
+      settled = false;
+    }
+  });
+  drawRadar();
+  radarAnimFrame = settled ? null : requestAnimationFrame(animateRadar);
+}
+
+function resizeRadar() {
+  const wrap = document.getElementById('radarCanvasWrap');
+  if (!wrap) return;
+  const size = wrap.clientWidth;
+  if (!size) return;
+  const canvas = document.getElementById('radarCanvas');
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width  = size * dpr;
+  canvas.height = size * dpr;
+  canvas.style.width  = size + 'px';
+  canvas.style.height = size + 'px';
+  document.getElementById('radarCanvasWrap').style.height = size + 'px';
+  drawRadar();
+}
+
+function drawRadar() {
+  const wrap = document.getElementById('radarCanvasWrap');
+  const canvas = document.getElementById('radarCanvas');
+  if (!wrap || !canvas) return;
+  const size = wrap.clientWidth;
+  if (!size) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, size, size);
+
+  const cx = size / 2, cy = size / 2;
+  const maxR = size * 0.33;
+  const N = CATEGORIES.length;
+  const angle = i => (Math.PI * 2 * i / N) - Math.PI / 2;
+  const polar = (r, a) => ({ x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) });
+  const isDark = !document.body.classList.contains('light');
+
+  // Grid rings
+  [2,4,6,8,10].forEach(ring => {
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const p = polar((ring/10)*maxR, angle(i%N));
+      i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.3)';
+    ctx.font = '10px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ring, cx+4, cy-(ring/10)*maxR-5);
+  });
+
+  // Axis lines
+  CATEGORIES.forEach((_,i) => {
+    const p = polar(maxR, angle(i));
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(p.x,p.y);
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+    ctx.lineWidth = 1; ctx.stroke();
+  });
+
+  // Filled polygon per segment (each cat its own color)
+  CATEGORIES.forEach((cat, i) => {
+    const v = (radarAnimCurrent[cat.key] || 0) / 10;
+    const a1 = angle(i); const a2 = angle(i+1);
+    const p1 = polar(v * maxR, a1);
+    const p2 = polar(v * maxR, a2);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(p1.x, p1.y);
+    // arc between two points at radius v*maxR
+    ctx.arc(cx, cy, v * maxR, a1, a2);
+    ctx.lineTo(cx, cy);
+    ctx.closePath();
+    ctx.fillStyle = CAT_COLORS[cat.key] + '33';
+    ctx.fill();
+    ctx.strokeStyle = CAT_COLORS[cat.key];
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+
+  // Data points
+  CATEGORIES.forEach((cat,i) => {
+    const v = (radarAnimCurrent[cat.key] || 0) / 10;
+    const p = polar(v*maxR, angle(i));
+    ctx.beginPath(); ctx.arc(p.x,p.y,4,0,Math.PI*2);
+    ctx.fillStyle = CAT_COLORS[cat.key]; ctx.fill();
+    ctx.strokeStyle = isDark ? '#0D0D0D' : '#fff';
+    ctx.lineWidth = 1.5; ctx.stroke();
+  });
+
+  // Labels
+  CATEGORIES.forEach((cat,i) => {
+    const a = angle(i);
+    const p = polar(maxR+22, a);
+    const eps = 0.05;
+    ctx.font = '600 11px system-ui';
+    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.7)';
+    ctx.textAlign = Math.cos(a)>eps ? 'left' : Math.cos(a)<-eps ? 'right' : 'center';
+    ctx.textBaseline = Math.sin(a)<-eps ? 'bottom' : Math.sin(a)>eps ? 'top' : 'middle';
+    ctx.fillText(`${CAT_EMOJIS[cat.key]} ${CAT_LABELS[cat.key]}`, p.x, p.y);
+  });
+}
+
+new ResizeObserver(() => { if (radarOpen) resizeRadar(); })
+  .observe(document.querySelector('.radar-section') || document.body);
+
 // Timeline: start week (0-based) and duration in weeks out of 20 total weeks
 // [ph1_start, ph1_dur, ph2_start, ph2_dur, ph3_start, ph3_dur]
 const TIMELINE_MAP = {
@@ -748,6 +991,7 @@ function toggleTask(id) {
 }
 
 function updateProgress() {
+  updateRadar();
   const total = TASKS.length;
   const totalDone = TASKS.filter(t => done[t.id]).length;
   document.getElementById('totalCount').textContent = `${totalDone} / ${total}`;
