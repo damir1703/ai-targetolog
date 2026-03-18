@@ -1533,6 +1533,8 @@ function getVisibleTasks() {
 function makeCatBlock(cat, catTasks) {
   const allCatTasks = TASKS.filter(t => {
     if (currentPhase !== 'all' && t.phase !== currentPhase) return false;
+    if (currentDept !== 'all' && CAT_TO_DEPT[t.cat] !== currentDept) return false;
+    if (currentPri !== 'all' && t.pri !== currentPri) return false;
     return t.cat === cat.key;
   });
   const doneCat = allCatTasks.filter(t => done[t.id]).length;
