@@ -1296,19 +1296,23 @@ function buildGrowthChart() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const isDark = !document.body.classList.contains('light');
-  const pad = { top: 20, right: 20, bottom: 48, left: 48 };
+  const pad = { top: 20, right: 20, bottom: 48, left: 56 };
   const cw = W - pad.left - pad.right;
   const ch = H - pad.top - pad.bottom;
   const totalDays = daysBetween(GROWTH_START, GROWTH_END);
-  const maxClients = 110;
+
+  // Dynamic Y scale based on real client count
+  const rawMax = Math.max(100, currentClients);
+  const step = rawMax <= 100 ? 25 : rawMax <= 300 ? 50 : rawMax <= 600 ? 100 : rawMax <= 1500 ? 250 : 500;
+  const maxClients = Math.ceil(rawMax * 1.15 / step) * step;
+  const gridValues = [];
+  for (let v = 0; v <= maxClients; v += step) gridValues.push(v);
 
   const xOf = d => pad.left + (daysBetween(GROWTH_START, d) / totalDays) * cw;
   const yOf = c => pad.top + ch - (c / maxClients) * ch;
 
-  // No phase background — clean chart
-
   // Grid lines Y
-  [0, 10, 25, 50, 75, 100].forEach(v => {
+  gridValues.forEach(v => {
     const y = yOf(v);
     ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y);
     ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
@@ -1401,7 +1405,7 @@ function buildGrowthChart() {
   if (currentClients > 0) {
     const actualPts = [
       { date: GROWTH_START, clients: 0 },
-      { date: new Date() <= GROWTH_END ? new Date() : GROWTH_END, clients: Math.min(currentClients, maxClients - 5) },
+      { date: new Date() <= GROWTH_END ? new Date() : GROWTH_END, clients: currentClients },
     ];
     // Filled area
     ctx.beginPath();
