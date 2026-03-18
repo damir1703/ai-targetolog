@@ -335,7 +335,28 @@ body.light .dept-cats .task-item { border-bottom-color: #F0F0F0; }
 .task-check-mark { color: #fff; font-size: 11px; display: none; }
 .task-item.done .task-check-mark { display: block; }
 .task-priority { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
-.task-text { font-size: 16px; color: #D0D0D0; line-height: 1.4; flex: 1; }
+.task-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.task-text { font-size: 16px; color: #D0D0D0; line-height: 1.4; }
+.task-done-date { font-size: 11px; color: #4CAF50; margin-top: 3px; }
+.task-note-preview { font-size: 12px; color: #555; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.task-note-btn { background: none; border: none; cursor: pointer; font-size: 14px; opacity: 0; transition: opacity 0.15s; padding: 0 4px; flex-shrink: 0; margin-top: 1px; }
+.task-item:hover .task-note-btn { opacity: 0.6; }
+.task-item:hover .task-note-btn:hover { opacity: 1; }
+.task-note-btn.has-note { opacity: 0.8; }
+.task-note-expand { display: none; margin-top: 8px; }
+.task-note-expand.open { display: block; }
+.task-note-expand textarea { width: 100%; background: #1A1A1A; border: 1px solid #2A2A2A; color: #C0C0C0; border-radius: 6px; padding: 8px 10px; font-size: 13px; line-height: 1.5; resize: vertical; min-height: 56px; outline: none; font-family: inherit; box-sizing: border-box; }
+.task-note-expand textarea:focus { border-color: #E53935; }
+.task-note-expand textarea::placeholder { color: #383838; }
+.note-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
+.note-hint { font-size: 11px; color: #383838; }
+.note-clear-btn { font-size: 11px; color: #444; background: none; border: none; cursor: pointer; padding: 0; }
+.note-clear-btn:hover { color: #E53935; }
+body.light .task-note-expand textarea { background: #F8F8F8; border-color: #E0E0E0; color: #444; }
+body.light .task-note-expand textarea::placeholder { color: #CCC; }
+body.light .task-note-preview { color: #AAA; }
+body.light .note-hint { color: #CCC; }
+body.light .note-clear-btn { color: #CCC; }
 .task-item.done .task-text { text-decoration: line-through; color: #666; }
 .no-results { text-align: center; color: #555; padding: 40px; font-size: 14px; }
 
@@ -947,6 +968,9 @@ const CAT_TO_DEPT = {
 const PRI_CLASS = {critical:'p-critical', important:'p-important', nice:'p-nice'};
 
 let done = JSON.parse(localStorage.getItem('ai_targ_done') || '{}');
+let notes = JSON.parse(localStorage.getItem('ai_targ_notes') || '{}');
+let doneAt = JSON.parse(localStorage.getItem('ai_targ_done_at') || '{}');
+let openNoteId = null;
 let currentPhase = 'all';
 let currentDept = 'all';
 let currentPri = 'all';
@@ -1422,13 +1446,55 @@ function buildTimeline() {
 function saveDone() {
   localStorage.setItem('ai_targ_done', JSON.stringify(done));
 }
+function saveNotes() { localStorage.setItem('ai_targ_notes', JSON.stringify(notes)); }
+function saveDoneAt() { localStorage.setItem('ai_targ_done_at', JSON.stringify(doneAt)); }
 
 function toggleTask(id) {
   done[id] = !done[id];
-  if (!done[id]) delete done[id];
+  if (done[id]) {
+    const now = new Date();
+    const months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+    doneAt[id] = now.getDate() + ' ' + months[now.getMonth()];
+    saveDoneAt();
+  } else {
+    delete done[id];
+    delete doneAt[id];
+    saveDoneAt();
+  }
   saveDone();
   renderAll();
   checkPhaseCelebration();
+}
+
+function toggleNote(id, e) {
+  e.stopPropagation();
+  openNoteId = openNoteId === id ? null : id;
+  document.querySelectorAll('.task-note-expand.open').forEach(p => p.classList.remove('open'));
+  if (openNoteId) {
+    const panel = document.getElementById('notepanel_' + id);
+    if (panel) { panel.classList.add('open'); panel.querySelector('textarea').focus(); }
+  }
+}
+
+function saveNote(id, value) {
+  if (value.trim()) { notes[id] = value.trim(); } else { delete notes[id]; }
+  saveNotes();
+  const btn = document.querySelector('.task-note-btn[data-note-id="' + id + '"]');
+  if (btn) btn.classList.toggle('has-note', !!notes[id]);
+  const preview = document.querySelector('.task-note-preview[data-preview-id="' + id + '"]');
+  if (preview) preview.textContent = notes[id] ? '📝 ' + notes[id] : '';
+}
+
+function clearNote(id) {
+  delete notes[id];
+  saveNotes();
+  openNoteId = null;
+  const panel = document.getElementById('notepanel_' + id);
+  if (panel) { panel.querySelector('textarea').value = ''; panel.classList.remove('open'); }
+  const btn = document.querySelector('.task-note-btn[data-note-id="' + id + '"]');
+  if (btn) btn.classList.remove('has-note');
+  const preview = document.querySelector('.task-note-preview[data-preview-id="' + id + '"]');
+  if (preview) preview.textContent = '';
 }
 
 function updateProgress() {
@@ -1496,11 +1562,25 @@ function makeCatBlock(cat, catTasks) {
     const item = document.createElement('div');
     item.className = 'task-item' + (done[t.id] ? ' done' : '');
     item.onclick = () => toggleTask(t.id);
+    const dateHtml = doneAt[t.id] ? `<span class="task-done-date">✓ ${doneAt[t.id]}</span>` : '';
+    const noteHtml = notes[t.id] ? `<span class="task-note-preview" data-preview-id="${t.id}">📝 ${notes[t.id]}</span>` : `<span class="task-note-preview" data-preview-id="${t.id}"></span>`;
     item.innerHTML = `
       <div class="task-check"><span class="task-check-mark">✓</span></div>
       <span class="task-priority">${PRI_ICON[t.pri]}</span>
-      <span class="task-text">${t.text}</span>
-      <span style="font-size:10px;color:#444;flex-shrink:0;">Ф${t.phase}</span>
+      <div class="task-body">
+        <span class="task-text">${t.text}</span>
+        ${dateHtml}
+        ${noteHtml}
+        <div class="task-note-expand" id="notepanel_${t.id}" onclick="event.stopPropagation()">
+          <textarea placeholder="Добавь заметку..." oninput="saveNote('${t.id}', this.value)">${notes[t.id] || ''}</textarea>
+          <div class="note-actions">
+            <span class="note-hint">Автосохранение</span>
+            <button class="note-clear-btn" onclick="clearNote('${t.id}')">Очистить</button>
+          </div>
+        </div>
+      </div>
+      <button class="task-note-btn ${notes[t.id] ? 'has-note' : ''}" data-note-id="${t.id}" onclick="toggleNote('${t.id}',event)" title="Заметка">📝</button>
+      <span style="font-size:10px;color:#444;flex-shrink:0;margin-top:2px;">Ф${t.phase}</span>
     `;
     tasksEl.appendChild(item);
   });
@@ -1508,6 +1588,7 @@ function makeCatBlock(cat, catTasks) {
 }
 
 function renderAll() {
+  const scrollY = window.scrollY;
   updateProgress();
   const visible = getVisibleTasks();
   const container = document.getElementById('tasklist');
@@ -1515,6 +1596,7 @@ function renderAll() {
 
   if (visible.length === 0) {
     container.innerHTML = '<div class="no-results">Задачи не найдены</div>';
+    requestAnimationFrame(() => window.scrollTo(0, scrollY));
     return;
   }
 
@@ -1564,6 +1646,14 @@ function renderAll() {
       catsEl.appendChild(makeCatBlock(cat, catTasks));
     });
   });
+
+  // Re-open note panel if was open
+  if (openNoteId) {
+    const p = document.getElementById('notepanel_' + openNoteId);
+    if (p) p.classList.add('open');
+  }
+
+  requestAnimationFrame(() => window.scrollTo(0, scrollY));
 }
 
 function toggleCat(key) {
@@ -1623,7 +1713,9 @@ function applyFilters() {
 function resetProgress() {
   if (confirm('Сбросить весь прогресс? Это действие нельзя отменить.')) {
     done = {};
+    doneAt = {};
     saveDone();
+    saveDoneAt();
     renderAll();
   }
 }
