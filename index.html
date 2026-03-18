@@ -442,6 +442,50 @@ body.light .note-clear-btn { color: #CCC; }
   <div class="phase-tab" data-phase="3" onclick="setPhase('3',this)">Фаза 3: 50→100 клиентов</div>
 </div>
 
+<div class="radar-section">
+  <div class="radar-section-header" onclick="toggleRadarSection()">
+    <span class="radar-section-title">🎯 Радар Продукта — здоровье по категориям</span>
+    <span class="radar-section-chevron" id="radarChev">▶</span>
+  </div>
+  <div class="radar-body" id="radarBody">
+    <div class="radar-canvas-wrap" id="radarCanvasWrap">
+      <canvas id="radarCanvas"></canvas>
+    </div>
+    <div class="radar-scores">
+      <div id="radarScoresList"></div>
+      <div class="radar-avg">
+        <span class="radar-avg-label">Средний прогресс</span>
+        <span class="radar-avg-val" id="radarAvg">0%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="filters">
+  <div class="filter-group">
+    <span class="filter-label">Отдел:</span>
+    <button class="filter-btn active" data-dept="all" onclick="setDept('all',this)">Все</button>
+    <button class="filter-btn" data-dept="marketing" onclick="setDept('marketing',this)">📣 Маркетинг</button>
+    <button class="filter-btn" data-dept="product" onclick="setDept('product',this)">📦 Продукт</button>
+    <button class="filter-btn" data-dept="sales" onclick="setDept('sales',this)">💰 Продажи</button>
+    <button class="filter-btn" data-dept="ops" onclick="setDept('ops',this)">⚙️ Операционка</button>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Приоритет:</span>
+    <button class="filter-btn active" data-pri="all" onclick="setPri('all',this)">Все</button>
+    <button class="filter-btn" data-pri="critical" onclick="setPri('critical',this)">🔴 Критично</button>
+    <button class="filter-btn priority-important" data-pri="important" onclick="setPri('important',this)">🟡 Важно</button>
+    <button class="filter-btn priority-nice" data-pri="nice" onclick="setPri('nice',this)">🟢 Желательно</button>
+  </div>
+  <button class="hide-done-btn" id="hideDoneBtn" onclick="toggleHideDone()">Скрыть выполненные</button>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="Поиск задачи..." oninput="applyFilters()" id="searchInput">
+  </div>
+</div>
+
+<div class="tasklist" id="tasklist"></div>
+
 <div class="gantt-section">
   <div class="gantt-title">Бизнес-план — Фазовый обзор</div>
   <div class="gantt-phases">
@@ -628,7 +672,6 @@ body.light .note-clear-btn { color: #CCC; }
   <div class="gantt-title" style="margin-top:4px;">Таймлайн по категориям</div>
   <div class="timeline-wrap" id="timelineWrap"></div>
 
-  <!-- Growth Chart -->
   <!-- Growth Chart + Info -->
   <div class="growth-section">
     <div class="growth-title">📈 График роста клиентов — план</div>
@@ -740,50 +783,6 @@ body.light .note-clear-btn { color: #CCC; }
     </div>
   </div>
 </div>
-
-<div class="radar-section">
-  <div class="radar-section-header" onclick="toggleRadarSection()">
-    <span class="radar-section-title">🎯 Радар Продукта — здоровье по категориям</span>
-    <span class="radar-section-chevron" id="radarChev">▶</span>
-  </div>
-  <div class="radar-body" id="radarBody">
-    <div class="radar-canvas-wrap" id="radarCanvasWrap">
-      <canvas id="radarCanvas"></canvas>
-    </div>
-    <div class="radar-scores">
-      <div id="radarScoresList"></div>
-      <div class="radar-avg">
-        <span class="radar-avg-label">Средний прогресс</span>
-        <span class="radar-avg-val" id="radarAvg">0%</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="filters">
-  <div class="filter-group">
-    <span class="filter-label">Отдел:</span>
-    <button class="filter-btn active" data-dept="all" onclick="setDept('all',this)">Все</button>
-    <button class="filter-btn" data-dept="marketing" onclick="setDept('marketing',this)">📣 Маркетинг</button>
-    <button class="filter-btn" data-dept="product" onclick="setDept('product',this)">📦 Продукт</button>
-    <button class="filter-btn" data-dept="sales" onclick="setDept('sales',this)">💰 Продажи</button>
-    <button class="filter-btn" data-dept="ops" onclick="setDept('ops',this)">⚙️ Операционка</button>
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">Приоритет:</span>
-    <button class="filter-btn active" data-pri="all" onclick="setPri('all',this)">Все</button>
-    <button class="filter-btn" data-pri="critical" onclick="setPri('critical',this)">🔴 Критично</button>
-    <button class="filter-btn priority-important" data-pri="important" onclick="setPri('important',this)">🟡 Важно</button>
-    <button class="filter-btn priority-nice" data-pri="nice" onclick="setPri('nice',this)">🟢 Желательно</button>
-  </div>
-  <button class="hide-done-btn" id="hideDoneBtn" onclick="toggleHideDone()">Скрыть выполненные</button>
-  <div class="search-wrap">
-    <span class="search-icon">🔍</span>
-    <input type="text" placeholder="Поиск задачи..." oninput="applyFilters()" id="searchInput">
-  </div>
-</div>
-
-<div class="tasklist" id="tasklist"></div>
 
 <script>
 const TASKS = [
