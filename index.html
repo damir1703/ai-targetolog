@@ -150,6 +150,78 @@ body.light .timeline-row-track { background: #F0F0F0; }
 body.light .timeline-divider { background: #DDD; }
 body.light .timeline-phase-label { color: #BBB; }
 
+/* Growth Section */
+.growth-section { padding: 20px 24px 28px; border-top: 1px solid #2A2A2A; }
+.growth-title { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+.growth-layout { display: flex; gap: 24px; align-items: flex-start; }
+.growth-chart-col { flex: 0 0 50%; min-width: 0; }
+.growth-info-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.growth-info-title { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.8px; }
+
+/* Phase cards */
+.growth-phase-cards { display: flex; flex-direction: column; gap: 8px; }
+.growth-phase-card { background: #161616; border: 1px solid #2A2A2A; border-radius: 8px; padding: 12px 14px; }
+.growth-phase-card.ph1 { border-left: 3px solid #E53935; }
+.growth-phase-card.ph2 { border-left: 3px solid #FF9800; }
+.growth-phase-card.ph3 { border-left: 3px solid #4CAF50; }
+.gpc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.gpc-badge { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 4px; }
+.gpc-badge.ph1 { background: rgba(229,57,53,0.15); color: #E53935; }
+.gpc-badge.ph2 { background: rgba(255,152,0,0.15); color: #FF9800; }
+.gpc-badge.ph3 { background: rgba(76,175,80,0.15); color: #4CAF50; }
+.gpc-name { font-size: 13px; font-weight: 600; color: #E0E0E0; flex: 1; }
+.gpc-date { font-size: 11px; color: #555; }
+.gpc-metrics { display: flex; gap: 12px; }
+.gpc-metric { display: flex; flex-direction: column; gap: 2px; }
+.gpc-ml { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+.gpc-mv { font-size: 14px; font-weight: 700; color: #E0E0E0; }
+
+/* LTV block */
+.growth-ltv-block { background: #161616; border: 1px solid #2A2A2A; border-radius: 8px; padding: 14px; }
+.ltv-rows { display: flex; flex-direction: column; gap: 8px; }
+.ltv-row { display: flex; align-items: center; gap: 10px; }
+.ltv-label { font-size: 11px; color: #777; width: 110px; flex-shrink: 0; }
+.ltv-bar-wrap { flex: 1; height: 6px; background: #2A2A2A; border-radius: 3px; overflow: hidden; }
+.ltv-bar { height: 100%; border-radius: 3px; }
+.ltv-val { font-size: 12px; font-weight: 700; width: 44px; text-align: right; flex-shrink: 0; }
+.ltv-bad { color: #E53935; }
+.ltv-ok { color: #FF9800; }
+.ltv-good { color: #4CAF50; }
+.ltv-great { color: #2196F3; }
+.ltv-note { font-size: 11px; color: #444; margin-top: 10px; line-height: 1.5; }
+
+/* Tooltip */
+#growthTooltip { display:none; position:absolute; background:#1E1E1E; border:1px solid #333; border-radius:8px; padding:10px 14px; font-size:12px; color:#E0E0E0; pointer-events:none; white-space:nowrap; z-index:10; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+
+body.light .growth-section { border-top-color: #E0E0E0; }
+body.light .growth-phase-card { background: #fff; border-color: #E0E0E0; }
+body.light .gpc-name { color: #1A1A1A; }
+body.light .gpc-mv { color: #1A1A1A; }
+body.light .growth-ltv-block { background: #fff; border-color: #E0E0E0; }
+body.light .ltv-bar-wrap { background: #E8E8E8; }
+body.light .ltv-note { color: #BBB; }
+body.light #growthTooltip { background: #fff; border-color: #E0E0E0; color: #333; }
+
+/* Quick stats row */
+.growth-quick-stats { display: flex; align-items: center; background: #161616; border: 1px solid #2A2A2A; border-radius: 8px; margin-top: 12px; padding: 14px 0; }
+.gqs-item { flex: 1; text-align: center; }
+.gqs-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+.gqs-val { font-size: 20px; font-weight: 800; color: #E0E0E0; line-height: 1; }
+.gqs-sub { font-size: 10px; color: #444; margin-top: 3px; }
+.gqs-divider { width: 1px; height: 36px; background: #2A2A2A; flex-shrink: 0; }
+body.light .growth-quick-stats { background: #fff; border-color: #E0E0E0; }
+body.light .gqs-val { color: #1A1A1A; }
+body.light .gqs-divider { background: #E0E0E0; }
+
+@media (max-width: 768px) {
+  .growth-layout { flex-direction: column; }
+  .growth-chart-col { flex: 0 0 100%; }
+  .growth-section { padding: 16px; }
+  .gpc-metrics { flex-wrap: wrap; gap: 8px; }
+  .ltv-label { width: 90px; }
+  .gqs-val { font-size: 16px; }
+}
+
 /* Product Radar */
 .radar-section { border-bottom: 1px solid #2A2A2A; background: #0D0D0D; }
 .radar-section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; cursor: pointer; user-select: none; }
@@ -204,7 +276,43 @@ body.light .radar-avg-label { color: #AAA; }
 .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #555; font-size: 13px; }
 
 /* Task list */
-.tasklist { padding: 16px 24px; }
+.tasklist { padding: 16px 24px; max-width: 900px; margin: 0 auto; width: 100%; }
+
+/* Department blocks */
+.dept-block { margin-bottom: 14px; border-radius: 12px; overflow: hidden; border: 1px solid #2A2A2A; }
+.dept-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; transition: background 0.15s; }
+.dept-header:hover { background: rgba(255,255,255,0.03); }
+.dept-left { display: flex; align-items: center; gap: 12px; }
+.dept-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.dept-name { font-size: 15px; font-weight: 700; color: #E0E0E0; text-transform: uppercase; letter-spacing: 0.8px; }
+.dept-count { font-size: 12px; color: #666; margin-left: 4px; }
+.dept-right { display: flex; align-items: center; gap: 10px; }
+.dept-bar-wrap { width: 80px; height: 5px; background: #2A2A2A; border-radius: 3px; overflow: hidden; }
+.dept-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+.dept-pct { font-size: 11px; color: #666; min-width: 32px; text-align: right; }
+.dept-chevron { font-size: 11px; color: #555; transition: transform 0.2s; }
+.dept-chevron.open { transform: rotate(90deg); }
+.dept-cats { display: none; border-top: 1px solid #2A2A2A; padding: 12px; gap: 8px; }
+.dept-cats.open { display: flex; flex-direction: column; }
+
+/* Nested category — card style */
+.dept-cats .category-block { margin-bottom: 0; border-radius: 8px; border: 1px solid #2A2A2A; background: #161616; overflow: hidden; }
+.dept-cats .category-header { padding: 12px 16px; background: transparent; }
+.dept-cats .category-header:hover { background: rgba(255,255,255,0.03); }
+.dept-cats .cat-name { font-size: 12px; letter-spacing: 0.5px; color: #BBB; }
+.dept-cats .tasks-container { border-top: 1px solid #2A2A2A; }
+.dept-cats .task-item { padding: 11px 16px; }
+
+body.light .dept-block { border-color: #E0E0E0; }
+body.light .dept-header:hover { background: rgba(0,0,0,0.02); }
+body.light .dept-name { color: #1A1A1A; }
+body.light .dept-bar-wrap { background: #E8E8E8; }
+body.light .dept-cats { border-top-color: #E0E0E0; }
+body.light .dept-cats .category-block { background: #FFFFFF; border-color: #E0E0E0; }
+body.light .dept-cats .category-header:hover { background: rgba(0,0,0,0.02); }
+body.light .dept-cats .cat-name { color: #888; }
+body.light .dept-cats .tasks-container { border-top-color: #E0E0E0; }
+body.light .dept-cats .task-item { border-bottom-color: #F0F0F0; }
 .category-block { margin-bottom: 10px; background: #161616; border: 1px solid #2A2A2A; border-radius: 10px; overflow: hidden; }
 .category-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; cursor: pointer; user-select: none; transition: background 0.15s; }
 .category-header:hover { background: #1E1E1E; }
@@ -498,6 +606,118 @@ body.light .radar-avg-label { color: #AAA; }
 
   <div class="gantt-title" style="margin-top:4px;">Таймлайн по категориям</div>
   <div class="timeline-wrap" id="timelineWrap"></div>
+
+  <!-- Growth Chart -->
+  <!-- Growth Chart + Info -->
+  <div class="growth-section">
+    <div class="growth-title">📈 График роста клиентов — план</div>
+    <div class="growth-layout">
+      <!-- Left: Chart -->
+      <div class="growth-chart-col">
+        <div id="growthChartWrap" style="position:relative;width:100%;">
+          <canvas id="growthChart"></canvas>
+          <div id="growthTooltip"></div>
+        </div>
+        <div class="growth-quick-stats">
+          <div class="gqs-item">
+            <div class="gqs-label">До конца Фазы 1</div>
+            <div class="gqs-val" id="gqsDaysLeft">—</div>
+            <div class="gqs-sub">дней осталось</div>
+          </div>
+          <div class="gqs-divider"></div>
+          <div class="gqs-item">
+            <div class="gqs-label">Нужно в день</div>
+            <div class="gqs-val" id="gqsPerDay">—</div>
+            <div class="gqs-sub">сделок/день</div>
+          </div>
+          <div class="gqs-divider"></div>
+          <div class="gqs-item">
+            <div class="gqs-label">MRR при Ф1</div>
+            <div class="gqs-val" style="color:#E53935">$2,000</div>
+            <div class="gqs-sub">10 кл × $200</div>
+          </div>
+          <div class="gqs-divider"></div>
+          <div class="gqs-item">
+            <div class="gqs-label">Окупаемость</div>
+            <div class="gqs-val" style="color:#4CAF50">4-6 мес</div>
+            <div class="gqs-sub">цель LTV</div>
+          </div>
+        </div>
+      </div>
+      <!-- Right: Info -->
+      <div class="growth-info-col">
+        <div class="growth-info-title">Финансовая модель</div>
+
+        <div class="growth-phase-cards">
+          <div class="growth-phase-card ph1">
+            <div class="gpc-header">
+              <span class="gpc-badge ph1">Ф1</span>
+              <span class="gpc-name">0 → 10 клиентов</span>
+              <span class="gpc-date">март 2026</span>
+            </div>
+            <div class="gpc-metrics">
+              <div class="gpc-metric"><span class="gpc-ml">MRR</span><span class="gpc-mv">$2,000</span></div>
+              <div class="gpc-metric"><span class="gpc-ml">ARR</span><span class="gpc-mv">$24,000</span></div>
+              <div class="gpc-metric"><span class="gpc-ml">На клиента</span><span class="gpc-mv">$200/мес</span></div>
+            </div>
+          </div>
+
+          <div class="growth-phase-card ph2">
+            <div class="gpc-header">
+              <span class="gpc-badge ph2">Ф2</span>
+              <span class="gpc-name">10 → 50 клиентов</span>
+              <span class="gpc-date">апрель 2026</span>
+            </div>
+            <div class="gpc-metrics">
+              <div class="gpc-metric"><span class="gpc-ml">MRR</span><span class="gpc-mv">$10,000</span></div>
+              <div class="gpc-metric"><span class="gpc-ml">ARR</span><span class="gpc-mv">$120,000</span></div>
+              <div class="gpc-metric"><span class="gpc-ml">На клиента</span><span class="gpc-mv">$200/мес</span></div>
+            </div>
+          </div>
+
+          <div class="growth-phase-card ph3">
+            <div class="gpc-header">
+              <span class="gpc-badge ph3">Ф3</span>
+              <span class="gpc-name">50 → 100 клиентов</span>
+              <span class="gpc-date">май 2026</span>
+            </div>
+            <div class="gpc-metrics">
+              <div class="gpc-metric"><span class="gpc-ml">MRR</span><span class="gpc-mv">$20,000</span></div>
+              <div class="gpc-metric"><span class="gpc-ml">ARR</span><span class="gpc-mv">$240,000</span></div>
+              <div class="gpc-metric"><span class="gpc-ml">На клиента</span><span class="gpc-mv">$200/мес</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="growth-ltv-block">
+          <div class="growth-info-title" style="margin-bottom:10px;">LTV-цель</div>
+          <div class="ltv-rows">
+            <div class="ltv-row">
+              <span class="ltv-label">Минимум (4 мес)</span>
+              <div class="ltv-bar-wrap"><div class="ltv-bar" style="width:33%;background:#E53935"></div></div>
+              <span class="ltv-val ltv-bad">$800</span>
+            </div>
+            <div class="ltv-row">
+              <span class="ltv-label">Цель (6 мес)</span>
+              <div class="ltv-bar-wrap"><div class="ltv-bar" style="width:50%;background:#FF9800"></div></div>
+              <span class="ltv-val ltv-ok">$1,200</span>
+            </div>
+            <div class="ltv-row">
+              <span class="ltv-label">Хорошо (12 мес)</span>
+              <div class="ltv-bar-wrap"><div class="ltv-bar" style="width:75%;background:#4CAF50"></div></div>
+              <span class="ltv-val ltv-good">$2,400</span>
+            </div>
+            <div class="ltv-row">
+              <span class="ltv-label">Отлично (24 мес)</span>
+              <div class="ltv-bar-wrap"><div class="ltv-bar" style="width:100%;background:#2196F3"></div></div>
+              <span class="ltv-val ltv-great">$4,800</span>
+            </div>
+          </div>
+          <div class="ltv-note">При средней подписке $200/мес · цель удержания ≥ 6 месяцев</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="radar-section">
@@ -521,16 +741,12 @@ body.light .radar-avg-label { color: #AAA; }
 
 <div class="filters">
   <div class="filter-group">
-    <span class="filter-label">Категория:</span>
-    <button class="filter-btn active" data-cat="all" onclick="setCat('all',this)">Все</button>
-    <button class="filter-btn" data-cat="product" onclick="setCat('product',this)">Продукт</button>
-    <button class="filter-btn" data-cat="offer" onclick="setCat('offer',this)">Оффер</button>
-    <button class="filter-btn" data-cat="marketing" onclick="setCat('marketing',this)">Маркетинг</button>
-    <button class="filter-btn" data-cat="sales" onclick="setCat('sales',this)">Продажи</button>
-    <button class="filter-btn" data-cat="tech" onclick="setCat('tech',this)">Техника</button>
-    <button class="filter-btn" data-cat="legal" onclick="setCat('legal',this)">Юридика</button>
-    <button class="filter-btn" data-cat="finance" onclick="setCat('finance',this)">Финансы</button>
-    <button class="filter-btn" data-cat="team" onclick="setCat('team',this)">Команда</button>
+    <span class="filter-label">Отдел:</span>
+    <button class="filter-btn active" data-dept="all" onclick="setDept('all',this)">Все</button>
+    <button class="filter-btn" data-dept="marketing" onclick="setDept('marketing',this)">📣 Маркетинг</button>
+    <button class="filter-btn" data-dept="product" onclick="setDept('product',this)">📦 Продукт</button>
+    <button class="filter-btn" data-dept="sales" onclick="setDept('sales',this)">💰 Продажи</button>
+    <button class="filter-btn" data-dept="ops" onclick="setDept('ops',this)">⚙️ Операционка</button>
   </div>
   <div class="filter-group">
     <span class="filter-label">Приоритет:</span>
@@ -569,22 +785,22 @@ const TASKS = [
   {id:'p1_off_6', phase:'1', cat:'offer', pri:'nice', text:'Разработать ROI-калькулятор: клиент вводит бюджет → видит прогноз экономии'},
 
   // ─── ФАЗА 1: МАРКЕТИНГ ───
-  {id:'p1_mkt_1', phase:'1', cat:'marketing', pri:'critical', text:'Составить список 50 целевых IT-школ и edtech-проектов СНГ с контактами ЛПР'},
-  {id:'p1_mkt_2', phase:'1', cat:'marketing', pri:'critical', text:'Написать 3 варианта холодного сообщения для outreach (A/B тест по откликам)'},
-  {id:'p1_mkt_3', phase:'1', cat:'marketing', pri:'critical', text:'Провести 20 персональных outreach-контактов в неделю через Telegram и LinkedIn'},
-  {id:'p1_mkt_4', phase:'1', cat:'marketing', pri:'important', text:'Опубликовать 10 прогревающих постов в Telegram до первой продажи'},
-  {id:'p1_mkt_5', phase:'1', cat:'marketing', pri:'important', text:'Оформить PDF-кейс Mars IT для отправки на диагностических встречах'},
-  {id:'p1_mkt_6', phase:'1', cat:'marketing', pri:'important', text:'Разместить кейс в 3 профильных Telegram-чатах маркетологов СНГ'},
-  {id:'p1_mkt_7', phase:'1', cat:'marketing', pri:'nice', text:'Снять видео-кейс 5 минут: проблема Mars IT → решение AI → результаты'},
+  {id:'p1_mkt_1', phase:'1', cat:'promotion', pri:'critical', text:'Составить список 50 целевых IT-школ и edtech-проектов СНГ с контактами ЛПР'},
+  {id:'p1_mkt_2', phase:'1', cat:'promotion', pri:'critical', text:'Написать 3 варианта холодного сообщения для outreach (A/B тест по откликам)'},
+  {id:'p1_mkt_3', phase:'1', cat:'promotion', pri:'critical', text:'Провести 20 персональных outreach-контактов в неделю через Telegram и LinkedIn'},
+  {id:'p1_mkt_4', phase:'1', cat:'content', pri:'important', text:'Опубликовать 10 прогревающих постов в Telegram до первой продажи'},
+  {id:'p1_mkt_5', phase:'1', cat:'content', pri:'important', text:'Оформить PDF-кейс Mars IT для отправки на диагностических встречах'},
+  {id:'p1_mkt_6', phase:'1', cat:'content', pri:'important', text:'Разместить кейс в 3 профильных Telegram-чатах маркетологов СНГ'},
+  {id:'p1_mkt_7', phase:'1', cat:'content', pri:'nice', text:'Снять видео-кейс 5 минут: проблема Mars IT → решение AI → результаты'},
 
   // ─── ФАЗА 1: ПРОДАЖИ ───
   {id:'p1_sal_1', phase:'1', cat:'sales', pri:'critical', text:'Разработать скрипт демо-звонка 30 минут: боли → демо → оффер → закрытие'},
   {id:'p1_sal_2', phase:'1', cat:'sales', pri:'critical', text:'Провести минимум 10 диагностических встреч и записать все возражения'},
-  {id:'p1_sal_3', phase:'1', cat:'sales', pri:'critical', text:'Настроить CRM в Notion: этапы воронки, поля сделки, pipeline-вид'},
-  {id:'p1_sal_4', phase:'1', cat:'sales', pri:'critical', text:'Настроить приём регулярных платежей $200/мес (карта, Telegram Stars, криптo)'},
+  {id:'p1_sal_3', phase:'1', cat:'crm', pri:'critical', text:'Настроить CRM в Notion: этапы воронки, поля сделки, pipeline-вид'},
+  {id:'p1_sal_4', phase:'1', cat:'crm', pri:'critical', text:'Настроить приём регулярных платежей $200/мес (карта, Telegram Stars, криптo)'},
   {id:'p1_sal_5', phase:'1', cat:'sales', pri:'critical', text:'Закрыть первых 3 платящих клиента (допустима скидка $100/мес для первых)'},
   {id:'p1_sal_6', phase:'1', cat:'sales', pri:'important', text:'Прописать ответы на топ-10 возражений: дорого, уже есть таргетолог, не доверяю AI'},
-  {id:'p1_sal_7', phase:'1', cat:'sales', pri:'important', text:'Настроить follow-up последовательность на 5 дней после демо'},
+  {id:'p1_sal_7', phase:'1', cat:'crm', pri:'important', text:'Настроить follow-up последовательность на 5 дней после демо'},
 
   // ─── ФАЗА 1: ЮРИДИКА ───
   {id:'p1_leg_1', phase:'1', cat:'legal', pri:'critical', text:'Зарегистрировать ИП или ООО для официального приёма платежей'},
@@ -620,21 +836,21 @@ const TASKS = [
   {id:'p2_off_4', phase:'2', cat:'offer', pri:'nice', text:'Запустить годовую подписку со скидкой 20% для снижения ежемесячного оттока'},
 
   // ─── ФАЗА 2: МАРКЕТИНГ ───
-  {id:'p2_mkt_1', phase:'2', cat:'marketing', pri:'critical', text:'Создать лендинг-сайт с оффером, кейсами и формой заявки (Tilda/Webflow)'},
-  {id:'p2_mkt_2', phase:'2', cat:'marketing', pri:'critical', text:'Запустить платную рекламу Facebook/Instagram с бюджетом $500/мес, цель — лиды'},
-  {id:'p2_mkt_3', phase:'2', cat:'marketing', pri:'critical', text:'Выстроить контент-план для личного бренда: 3 поста/нед в Telegram'},
-  {id:'p2_mkt_4', phase:'2', cat:'marketing', pri:'critical', text:'Опубликовать 3 кейс-стади на vc.ru и в Telegram-каналах маркетологов СНГ'},
-  {id:'p2_mkt_5', phase:'2', cat:'marketing', pri:'important', text:'Запустить лид-магнит: бесплатный аудит Facebook Ads за 24 часа'},
-  {id:'p2_mkt_6', phase:'2', cat:'marketing', pri:'important', text:'Настроить email-рассылку: серия из 7 писем после заявки (nurture sequence)'},
-  {id:'p2_mkt_7', phase:'2', cat:'marketing', pri:'important', text:'Вырастить Telegram-канал до 1000 подписчиков через коллаборации'},
-  {id:'p2_mkt_8', phase:'2', cat:'marketing', pri:'nice', text:'Провести вебинар «Как снизить CPL вдвое с AI» для 100+ участников'},
+  {id:'p2_mkt_1', phase:'2', cat:'promotion', pri:'critical', text:'Создать лендинг-сайт с оффером, кейсами и формой заявки (Tilda/Webflow)'},
+  {id:'p2_mkt_2', phase:'2', cat:'promotion', pri:'critical', text:'Запустить платную рекламу Facebook/Instagram с бюджетом $500/мес, цель — лиды'},
+  {id:'p2_mkt_3', phase:'2', cat:'content', pri:'critical', text:'Выстроить контент-план для личного бренда: 3 поста/нед в Telegram'},
+  {id:'p2_mkt_4', phase:'2', cat:'content', pri:'critical', text:'Опубликовать 3 кейс-стади на vc.ru и в Telegram-каналах маркетологов СНГ'},
+  {id:'p2_mkt_5', phase:'2', cat:'promotion', pri:'important', text:'Запустить лид-магнит: бесплатный аудит Facebook Ads за 24 часа'},
+  {id:'p2_mkt_6', phase:'2', cat:'content', pri:'important', text:'Настроить email-рассылку: серия из 7 писем после заявки (nurture sequence)'},
+  {id:'p2_mkt_7', phase:'2', cat:'content', pri:'important', text:'Вырастить Telegram-канал до 1000 подписчиков через коллаборации'},
+  {id:'p2_mkt_8', phase:'2', cat:'content', pri:'nice', text:'Провести вебинар «Как снизить CPL вдвое с AI» для 100+ участников'},
 
   // ─── ФАЗА 2: ПРОДАЖИ ───
   {id:'p2_sal_1', phase:'2', cat:'sales', pri:'critical', text:'Нанять sales-ассистента для outreach и первичной обработки лидов'},
-  {id:'p2_sal_2', phase:'2', cat:'sales', pri:'critical', text:'Внедрить полноценную CRM (HubSpot Free/Pipedrive) и перенести все сделки'},
-  {id:'p2_sal_3', phase:'2', cat:'sales', pri:'critical', text:'Выстроить автоматизированную воронку: лид → демо → пилот → оплата с SLA на каждый этап'},
-  {id:'p2_sal_4', phase:'2', cat:'sales', pri:'important', text:'Написать playbook продаж: скрипты, шаблоны писем, ответы на возражения для ассистента'},
-  {id:'p2_sal_5', phase:'2', cat:'sales', pri:'important', text:'Провести NPS-опрос всех клиентов после 30 дней и устранить топ-3 проблемы'},
+  {id:'p2_sal_2', phase:'2', cat:'crm', pri:'critical', text:'Внедрить полноценную CRM (HubSpot Free/Pipedrive) и перенести все сделки'},
+  {id:'p2_sal_3', phase:'2', cat:'crm', pri:'critical', text:'Выстроить автоматизированную воронку: лид → демо → пилот → оплата с SLA на каждый этап'},
+  {id:'p2_sal_4', phase:'2', cat:'crm', pri:'important', text:'Написать playbook продаж: скрипты, шаблоны писем, ответы на возражения для ассистента'},
+  {id:'p2_sal_5', phase:'2', cat:'crm', pri:'important', text:'Провести NPS-опрос всех клиентов после 30 дней и устранить топ-3 проблемы'},
   {id:'p2_sal_6', phase:'2', cat:'sales', pri:'nice', text:'Подписать партнёрское соглашение с 3 маркетинговыми агентствами на реферралы'},
 
   // ─── ФАЗА 2: ТЕХНИКА ───
@@ -669,15 +885,15 @@ const TASKS = [
   {id:'p3_off_3', phase:'3', cat:'offer', pri:'important', text:'Обновить Grand Slam Offer с кейсами 50+ клиентов и новыми гарантиями'},
 
   // ─── ФАЗА 3: МАРКЕТИНГ ───
-  {id:'p3_mkt_1', phase:'3', cat:'marketing', pri:'critical', text:'Запустить PR-кампанию: попасть в топ-3 профильных медиа СНГ (vc.ru, Habr, Ain.ua)'},
-  {id:'p3_mkt_2', phase:'3', cat:'marketing', pri:'critical', text:'Выступить на 3 профильных конференциях по EdTech и digital-маркетингу в СНГ'},
-  {id:'p3_mkt_3', phase:'3', cat:'marketing', pri:'critical', text:'Выстроить партнёрский маркетинг: интеграции с 10 смежными SaaS-продуктами для школ'},
-  {id:'p3_mkt_4', phase:'3', cat:'marketing', pri:'important', text:'Запустить подкаст или YouTube-шоу о маркетинге в EdTech (12 эпизодов)'},
-  {id:'p3_mkt_5', phase:'3', cat:'marketing', pri:'nice', text:'Локализовать продукт и запустить выход на рынки MENA и Турции'},
+  {id:'p3_mkt_1', phase:'3', cat:'promotion', pri:'critical', text:'Запустить PR-кампанию: попасть в топ-3 профильных медиа СНГ (vc.ru, Habr, Ain.ua)'},
+  {id:'p3_mkt_2', phase:'3', cat:'promotion', pri:'critical', text:'Выступить на 3 профильных конференциях по EdTech и digital-маркетингу в СНГ'},
+  {id:'p3_mkt_3', phase:'3', cat:'promotion', pri:'critical', text:'Выстроить партнёрский маркетинг: интеграции с 10 смежными SaaS-продуктами для школ'},
+  {id:'p3_mkt_4', phase:'3', cat:'content', pri:'important', text:'Запустить подкаст или YouTube-шоу о маркетинге в EdTech (12 эпизодов)'},
+  {id:'p3_mkt_5', phase:'3', cat:'promotion', pri:'nice', text:'Локализовать продукт и запустить выход на рынки MENA и Турции'},
 
   // ─── ФАЗА 3: ПРОДАЖИ ───
   {id:'p3_sal_1', phase:'3', cat:'sales', pri:'critical', text:'Нанять Head of Sales и выстроить отдел продаж из 2-3 менеджеров'},
-  {id:'p3_sal_2', phase:'3', cat:'sales', pri:'critical', text:'Внедрить систему предотвращения оттока: health score клиента + триггеры для CS-команды'},
+  {id:'p3_sal_2', phase:'3', cat:'crm', pri:'critical', text:'Внедрить систему предотвращения оттока: health score клиента + триггеры для CS-команды'},
   {id:'p3_sal_3', phase:'3', cat:'sales', pri:'important', text:'Запустить программу upsell/cross-sell: апгрейды тарифа и дополнительные услуги'},
   {id:'p3_sal_4', phase:'3', cat:'sales', pri:'important', text:'Провести ежеквартальные бизнес-ревью (QBR) с топ-20 клиентами'},
 
@@ -702,42 +918,61 @@ const TASKS = [
 ];
 
 const CATEGORIES = [
-  {key:'product', label:'Продукт'},
-  {key:'offer', label:'Оффер'},
-  {key:'marketing', label:'Маркетинг'},
-  {key:'sales', label:'Продажи'},
-  {key:'tech', label:'Техника'},
-  {key:'legal', label:'Юридика'},
-  {key:'finance', label:'Финансы'},
-  {key:'team', label:'Команда'},
+  {key:'offer',     label:'Оффер'},
+  {key:'content',   label:'Контент & SMM'},
+  {key:'promotion', label:'Продвижение & Реклама'},
+  {key:'product',   label:'Продукт'},
+  {key:'tech',      label:'Техника'},
+  {key:'sales',     label:'Продажи & Встречи'},
+  {key:'crm',       label:'CRM & Воронка'},
+  {key:'legal',     label:'Юридика'},
+  {key:'finance',   label:'Финансы'},
+  {key:'team',      label:'Команда'},
 ];
 
 const PRI_ICON = {critical:'🔴', important:'🟡', nice:'🟢'};
+
+const DEPARTMENTS = [
+  { key:'marketing', label:'Маркетинг',   icon:'📣', color:'#2196F3', cats:['offer','content','promotion'] },
+  { key:'product',   label:'Продукт',     icon:'📦', color:'#9C27B0', cats:['product','tech'] },
+  { key:'sales',     label:'Продажи',     icon:'💰', color:'#E53935', cats:['sales','crm'] },
+  { key:'ops',       label:'Операционка', icon:'⚙️', color:'#FF9800', cats:['legal','finance','team'] },
+];
+const CAT_TO_DEPT = {
+  offer:'marketing', content:'marketing', promotion:'marketing',
+  product:'product', tech:'product',
+  sales:'sales', crm:'sales',
+  legal:'ops', finance:'ops', team:'ops',
+};
 const PRI_CLASS = {critical:'p-critical', important:'p-important', nice:'p-nice'};
 
 let done = JSON.parse(localStorage.getItem('ai_targ_done') || '{}');
 let currentPhase = 'all';
-let currentCat = 'all';
+let currentDept = 'all';
 let currentPri = 'all';
 let hideDone = false;
 let openCats = {};
+let openDepts = {};
 
 // Gantt weekly map: category → [w1,w2,w3,w4,w5,w6,w7,w8,w9,w10,w11,w12] where value = phase
 // ─── PRODUCT RADAR ───
 const CAT_COLORS = {
-  product:'#E53935', offer:'#FF9800', marketing:'#2196F3',
-  sales:'#9C27B0', tech:'#00BCD4', legal:'#FF5722',
-  finance:'#4CAF50', team:'#FFC107'
+  offer:'#FF9800', content:'#2196F3', promotion:'#E91E63',
+  product:'#9C27B0', tech:'#00BCD4',
+  sales:'#E53935', crm:'#F44336',
+  legal:'#FF5722', finance:'#4CAF50', team:'#FFC107'
 };
 const CAT_LABELS = {
-  product:'Продукт', offer:'Оффер', marketing:'Маркетинг',
-  sales:'Продажи', tech:'Техника', legal:'Юридика',
-  finance:'Финансы', team:'Команда'
+  offer:'Оффер', content:'Контент & SMM', promotion:'Продвижение & Реклама',
+  product:'Продукт', tech:'Техника',
+  sales:'Продажи & Встречи', crm:'CRM & Воронка',
+  legal:'Юридика', finance:'Финансы', team:'Команда'
 };
 const CAT_EMOJIS = {
-  product:'📦', offer:'🎯', marketing:'📣',
-  sales:'💰', tech:'⚙️', legal:'📄',
-  finance:'💵', team:'👥'
+  offer:'🎯', content:'📝', promotion:'📈',
+  product:'📦', tech:'⚙️',
+  sales:'💬', crm:'🔄',
+  legal:'📄', finance:'💵', team:'👥'
 };
 
 let radarAnimCurrent = {};
@@ -911,6 +1146,212 @@ function drawRadar() {
 new ResizeObserver(() => { if (radarOpen) resizeRadar(); })
   .observe(document.querySelector('.radar-section') || document.body);
 
+// ─── GROWTH CHART ───
+const GROWTH_START = new Date(2026, 2, 14); // 14 марта 2026
+const GROWTH_MILESTONES = [
+  { date: new Date(2026, 2, 14), clients: 0,   phase: 1, label: 'Старт' },
+  { date: new Date(2026, 2, 31), clients: 10,  phase: 1, label: '10 клиентов' },
+  { date: new Date(2026, 3, 30), clients: 50,  phase: 2, label: '50 клиентов' },
+  { date: new Date(2026, 4, 31), clients: 100, phase: 3, label: '100 клиентов' },
+];
+const GROWTH_END = new Date(2026, 4, 31);
+
+// Actual data — пока пустой, будем добавлять
+const GROWTH_ACTUAL = [
+  // { date: new Date(2026, 2, 14), clients: 0 },
+];
+
+function daysBetween(a, b) {
+  return Math.round((b - a) / 86400000);
+}
+
+function planClientsAt(dayOffset) {
+  const ms = GROWTH_MILESTONES;
+  for (let i = 1; i < ms.length; i++) {
+    const d0 = daysBetween(GROWTH_START, ms[i-1].date);
+    const d1 = daysBetween(GROWTH_START, ms[i].date);
+    if (dayOffset <= d1) {
+      const t = (dayOffset - d0) / (d1 - d0);
+      // ease in-out
+      const e = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+      return ms[i-1].clients + (ms[i].clients - ms[i-1].clients) * e;
+    }
+  }
+  return 100;
+}
+
+function buildGrowthChart() {
+  const wrap = document.getElementById('growthChartWrap');
+  const canvas = document.getElementById('growthChart');
+  if (!wrap || !canvas) return;
+
+  const W = wrap.clientWidth;
+  const H = Math.round(W * 0.32);
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  wrap.style.height = H + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const isDark = !document.body.classList.contains('light');
+  const pad = { top: 20, right: 20, bottom: 48, left: 48 };
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top - pad.bottom;
+  const totalDays = daysBetween(GROWTH_START, GROWTH_END);
+  const maxClients = 110;
+
+  const xOf = d => pad.left + (daysBetween(GROWTH_START, d) / totalDays) * cw;
+  const yOf = c => pad.top + ch - (c / maxClients) * ch;
+
+  // No phase background — clean chart
+
+  // Grid lines Y
+  [0, 10, 25, 50, 75, 100].forEach(v => {
+    const y = yOf(v);
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y);
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+    ctx.lineWidth = 1; ctx.setLineDash([4, 4]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = isDark ? '#555' : '#AAA';
+    ctx.font = '10px system-ui'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText(v, pad.left - 6, y);
+  });
+
+  // X axis month labels
+  const months = [
+    { date: new Date(2026, 2, 14), label: '14 мар' },
+    { date: new Date(2026, 2, 31), label: '31 мар' },
+    { date: new Date(2026, 3, 15), label: '15 апр' },
+    { date: new Date(2026, 3, 30), label: '30 апр' },
+    { date: new Date(2026, 4, 15), label: '15 май' },
+    { date: new Date(2026, 4, 31), label: '31 май' },
+  ];
+  months.forEach(m => {
+    const x = xOf(m.date);
+    ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, pad.top + ch);
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+    ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = isDark ? '#555' : '#AAA';
+    ctx.font = '10px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(m.label, x, pad.top + ch + 8);
+  });
+
+  // Phase labels
+  const phaseLabels = [
+    { x: (xOf(GROWTH_MILESTONES[0].date) + xOf(GROWTH_MILESTONES[1].date)) / 2, label: 'Фаза 1', color: '#E53935' },
+    { x: (xOf(GROWTH_MILESTONES[1].date) + xOf(GROWTH_MILESTONES[2].date)) / 2, label: 'Фаза 2', color: '#FF9800' },
+    { x: (xOf(GROWTH_MILESTONES[2].date) + xOf(GROWTH_MILESTONES[3].date)) / 2, label: 'Фаза 3', color: '#4CAF50' },
+  ];
+  phaseLabels.forEach(pl => {
+    ctx.fillStyle = pl.color;
+    ctx.font = '600 10px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(pl.label, pl.x, pad.top + ch + 28);
+  });
+
+  // Plan line — filled area
+  ctx.beginPath();
+  ctx.moveTo(pad.left, yOf(0));
+  for (let d = 0; d <= totalDays; d++) {
+    ctx.lineTo(pad.left + (d/totalDays)*cw, yOf(planClientsAt(d)));
+  }
+  ctx.lineTo(pad.left + cw, pad.top + ch);
+  ctx.lineTo(pad.left, pad.top + ch);
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
+  grad.addColorStop(0, 'rgba(229,57,53,0.18)');
+  grad.addColorStop(1, 'rgba(229,57,53,0.02)');
+  ctx.fillStyle = grad; ctx.fill();
+
+  // Plan line stroke
+  ctx.beginPath();
+  ctx.moveTo(pad.left, yOf(0));
+  for (let d = 0; d <= totalDays; d++) {
+    ctx.lineTo(pad.left + (d/totalDays)*cw, yOf(planClientsAt(d)));
+  }
+  ctx.strokeStyle = '#E53935'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round';
+  ctx.setLineDash([]); ctx.stroke();
+
+  // Milestone dots
+  GROWTH_MILESTONES.forEach((m, i) => {
+    if (i === 0) return;
+    const x = xOf(m.date), y = yOf(m.clients);
+    ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI*2);
+    const c = i===1 ? '#E53935' : i===2 ? '#FF9800' : '#4CAF50';
+    ctx.fillStyle = c; ctx.fill();
+    ctx.strokeStyle = isDark ? '#0D0D0D' : '#fff'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = c; ctx.font = '600 11px system-ui';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText(m.label, x, y - 8);
+  });
+
+  // Today line
+  const today = new Date();
+  if (today >= GROWTH_START && today <= GROWTH_END) {
+    const tx = xOf(today);
+    ctx.beginPath(); ctx.moveTo(tx, pad.top); ctx.lineTo(tx, pad.top + ch);
+    ctx.strokeStyle = '#FFC107'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#FFC107'; ctx.font = '600 10px system-ui';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText('Сегодня', tx, pad.top - 2);
+  }
+
+  // Actual data line (если есть)
+  if (GROWTH_ACTUAL.length > 1) {
+    ctx.beginPath();
+    GROWTH_ACTUAL.forEach((pt, i) => {
+      const x = xOf(pt.date), y = yOf(pt.clients);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = '#4CAF50'; ctx.lineWidth = 2.5; ctx.setLineDash([]);
+    ctx.lineJoin = 'round'; ctx.stroke();
+    GROWTH_ACTUAL.forEach(pt => {
+      ctx.beginPath(); ctx.arc(xOf(pt.date), yOf(pt.clients), 4, 0, Math.PI*2);
+      ctx.fillStyle = '#4CAF50'; ctx.fill();
+    });
+  }
+
+  // Axes
+  ctx.beginPath();
+  ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, pad.top + ch); ctx.lineTo(pad.left + cw, pad.top + ch);
+  ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
+  ctx.lineWidth = 1; ctx.setLineDash([]); ctx.stroke();
+
+  // Tooltip
+  canvas.onmousemove = (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    if (mx < pad.left || mx > pad.left + cw) { document.getElementById('growthTooltip').style.display='none'; return; }
+    const d = Math.round(((mx - pad.left) / cw) * totalDays);
+    const date = new Date(GROWTH_START); date.setDate(date.getDate() + d);
+    const planned = Math.round(planClientsAt(d));
+    const revenue = planned * 200;
+    const tip = document.getElementById('growthTooltip');
+    const monthNames = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+    tip.innerHTML = `<b>${date.getDate()} ${monthNames[date.getMonth()]}</b><br>Клиентов: <b style="color:#E53935">${planned}</b><br>Выручка: <b style="color:#4CAF50">$${revenue.toLocaleString()}/мес</b>`;
+    tip.style.display = 'block';
+    tip.style.left = Math.min(mx + 12, W - 160) + 'px';
+    tip.style.top = (e.clientY - rect.top - 40) + 'px';
+  };
+  canvas.onmouseleave = () => { document.getElementById('growthTooltip').style.display='none'; };
+}
+
+function updateGrowthQuickStats() {
+  const today = new Date();
+  const phase1End = new Date(2026, 2, 31);
+  const daysLeft = Math.max(0, daysBetween(today, phase1End));
+  const perDay = daysLeft > 0 ? (10 / daysLeft).toFixed(1) : '—';
+  const el1 = document.getElementById('gqsDaysLeft');
+  const el2 = document.getElementById('gqsPerDay');
+  if (el1) el1.textContent = daysLeft;
+  if (el2) el2.textContent = perDay;
+}
+
+new ResizeObserver(() => buildGrowthChart()).observe(document.getElementById('growthChartWrap') || document.body);
+
 // Timeline: start week (0-based) and duration in weeks out of 20 total weeks
 // [ph1_start, ph1_dur, ph2_start, ph2_dur, ph3_start, ph3_dur]
 const TIMELINE_MAP = {
@@ -1016,12 +1457,54 @@ function getVisibleTasks() {
   const search = document.getElementById('searchInput').value.toLowerCase();
   return TASKS.filter(t => {
     if (currentPhase !== 'all' && t.phase !== currentPhase) return false;
-    if (currentCat !== 'all' && t.cat !== currentCat) return false;
+    if (currentDept !== 'all' && CAT_TO_DEPT[t.cat] !== currentDept) return false;
     if (currentPri !== 'all' && t.pri !== currentPri) return false;
     if (hideDone && done[t.id]) return false;
     if (search && !t.text.toLowerCase().includes(search)) return false;
     return true;
   });
+}
+
+function makeCatBlock(cat, catTasks) {
+  const allCatTasks = TASKS.filter(t => {
+    if (currentPhase !== 'all' && t.phase !== currentPhase) return false;
+    return t.cat === cat.key;
+  });
+  const doneCat = allCatTasks.filter(t => done[t.id]).length;
+  const totalCat = allCatTasks.length;
+  const pctCat = totalCat ? Math.round(doneCat / totalCat * 100) : 0;
+  const isOpen = openCats[cat.key] !== false;
+
+  const block = document.createElement('div');
+  block.className = 'category-block';
+  block.innerHTML = `
+    <div class="category-header" onclick="toggleCat('${cat.key}')">
+      <div class="cat-left">
+        <span class="cat-chevron ${isOpen ? 'open' : ''}" id="chev_${cat.key}">▶</span>
+        <span class="cat-name">${cat.label}</span>
+        <span class="cat-progress">${doneCat} / ${totalCat}</span>
+      </div>
+      <div class="cat-right">
+        <div class="cat-mini-bar"><div class="cat-mini-fill" style="width:${pctCat}%"></div></div>
+        <span style="font-size:11px;color:#666;">${pctCat}%</span>
+      </div>
+    </div>
+    <div class="tasks-container" id="tasks_${cat.key}" style="display:${isOpen ? 'block' : 'none'}"></div>
+  `;
+  const tasksEl = block.querySelector(`#tasks_${cat.key}`);
+  catTasks.forEach(t => {
+    const item = document.createElement('div');
+    item.className = 'task-item' + (done[t.id] ? ' done' : '');
+    item.onclick = () => toggleTask(t.id);
+    item.innerHTML = `
+      <div class="task-check"><span class="task-check-mark">✓</span></div>
+      <span class="task-priority">${PRI_ICON[t.pri]}</span>
+      <span class="task-text">${t.text}</span>
+      <span style="font-size:10px;color:#444;flex-shrink:0;">Ф${t.phase}</span>
+    `;
+    tasksEl.appendChild(item);
+  });
+  return block;
 }
 
 function renderAll() {
@@ -1035,55 +1518,50 @@ function renderAll() {
     return;
   }
 
-  // Group by category
-  CATEGORIES.forEach(cat => {
-    const catTasks = visible.filter(t => t.cat === cat.key);
-    if (catTasks.length === 0) return;
+  // Filter departments to show
+  const deptsToShow = currentDept === 'all' ? DEPARTMENTS : DEPARTMENTS.filter(d => d.key === currentDept);
 
-    const block = document.createElement('div');
-    block.className = 'category-block';
+  deptsToShow.forEach(dept => {
+    const deptVisible = visible.filter(t => CAT_TO_DEPT[t.cat] === dept.key);
+    if (deptVisible.length === 0) return;
 
-    const allCatTasks = TASKS.filter(t => {
-      if (currentPhase !== 'all' && t.phase !== currentPhase) return false;
-      return t.cat === cat.key;
-    });
-    const doneCat = allCatTasks.filter(t => done[t.id]).length;
-    const totalCat = allCatTasks.length;
-    const pctCat = totalCat ? Math.round(doneCat / totalCat * 100) : 0;
+    // Dept-level progress
+    const deptAll = TASKS.filter(t => CAT_TO_DEPT[t.cat] === dept.key &&
+      (currentPhase === 'all' || t.phase === currentPhase));
+    const deptDone = deptAll.filter(t => done[t.id]).length;
+    const deptTotal = deptAll.length;
+    const deptPct = deptTotal ? Math.round(deptDone / deptTotal * 100) : 0;
+    const isDeptOpen = openDepts[dept.key] !== false;
 
-    const isOpen = openCats[cat.key] !== false;
-
-    block.innerHTML = `
-      <div class="category-header" onclick="toggleCat('${cat.key}')">
-        <div class="cat-left">
-          <span class="cat-chevron ${isOpen ? 'open' : ''}" id="chev_${cat.key}">▶</span>
-          <span class="cat-name">${cat.label}</span>
-          <span class="cat-progress">${doneCat} / ${totalCat}</span>
+    const deptBlock = document.createElement('div');
+    deptBlock.className = 'dept-block';
+    deptBlock.style.background = isDeptOpen ? '#141414' : '#161616';
+    deptBlock.innerHTML = `
+      <div class="dept-header" onclick="toggleDept('${dept.key}')">
+        <div class="dept-left">
+          <div class="dept-icon" style="background:${dept.color}22;border:1px solid ${dept.color}44;">${dept.icon}</div>
+          <span class="dept-name" style="color:${dept.color}">${dept.label}</span>
+          <span class="dept-count">${deptDone} / ${deptTotal}</span>
         </div>
-        <div class="cat-right">
-          <div class="cat-mini-bar">
-            <div class="cat-mini-fill" style="width:${pctCat}%"></div>
+        <div class="dept-right">
+          <div class="dept-bar-wrap">
+            <div class="dept-bar-fill" style="width:${deptPct}%;background:${dept.color}"></div>
           </div>
-          <span style="font-size:11px;color:#666;">${pctCat}%</span>
+          <span class="dept-pct">${deptPct}%</span>
+          <span class="dept-chevron ${isDeptOpen ? 'open' : ''}" id="deptchev_${dept.key}">▶</span>
         </div>
       </div>
-      <div class="tasks-container" id="tasks_${cat.key}" style="display:${isOpen ? 'block' : 'none'}"></div>
+      <div class="dept-cats ${isDeptOpen ? 'open' : ''}" id="deptcats_${dept.key}"></div>
     `;
+    container.appendChild(deptBlock);
 
-    container.appendChild(block);
-
-    const tasksEl = block.querySelector(`#tasks_${cat.key}`);
-    catTasks.forEach(t => {
-      const item = document.createElement('div');
-      item.className = 'task-item' + (done[t.id] ? ' done' : '');
-      item.onclick = () => toggleTask(t.id);
-      item.innerHTML = `
-        <div class="task-check"><span class="task-check-mark">✓</span></div>
-        <span class="task-priority">${PRI_ICON[t.pri]}</span>
-        <span class="task-text">${t.text}</span>
-        <span style="font-size:10px;color:#444;flex-shrink:0;">Ф${t.phase}</span>
-      `;
-      tasksEl.appendChild(item);
+    const catsEl = deptBlock.querySelector(`#deptcats_${dept.key}`);
+    dept.cats.forEach(catKey => {
+      const cat = CATEGORIES.find(c => c.key === catKey);
+      if (!cat) return;
+      const catTasks = deptVisible.filter(t => t.cat === catKey);
+      if (catTasks.length === 0) return;
+      catsEl.appendChild(makeCatBlock(cat, catTasks));
     });
   });
 }
@@ -1094,6 +1572,21 @@ function toggleCat(key) {
   const chev = document.getElementById('chev_' + key);
   if (el) el.style.display = openCats[key] === false ? 'none' : 'block';
   if (chev) chev.classList.toggle('open', openCats[key] !== false);
+}
+
+function toggleDept(key) {
+  openDepts[key] = openDepts[key] === false ? true : false;
+  const el = document.getElementById('deptcats_' + key);
+  const chev = document.getElementById('deptchev_' + key);
+  if (el) el.style.display = openDepts[key] === false ? 'none' : 'block';
+  if (chev) chev.classList.toggle('open', openDepts[key] !== false);
+}
+
+function setDept(dept, btn) {
+  currentDept = dept;
+  document.querySelectorAll('[data-dept]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
 }
 
 function setPhase(phase, btn) {
@@ -1229,6 +1722,7 @@ function toggleTheme() {
   const isLight = document.body.classList.toggle('light');
   document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀️';
   localStorage.setItem('ai_targ_theme', isLight ? 'light' : 'dark');
+  setTimeout(buildGrowthChart, 50);
 }
 // restore saved theme
 if (localStorage.getItem('ai_targ_theme') === 'light') {
@@ -1245,6 +1739,8 @@ function togglePhaseDetail(ph) {
 }
 
 buildTimeline();
+buildGrowthChart();
+updateGrowthQuickStats();
 renderAll();
 </script>
 </body>
