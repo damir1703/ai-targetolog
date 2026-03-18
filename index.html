@@ -467,6 +467,7 @@ body.light .modal-radio-btn { border-color: #E0E0E0; color: #BBB; }
       </div>
       <span style="font-size:12px;color:#666;" id="totalPct">0%</span>
     </div>
+    <button class="btn-add-task" onclick="openAddModal()">+ Задача</button>
     <button class="btn-theme" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">☀️</button>
     <button class="btn-print" onclick="window.print()">🖨 Печать</button>
     <button class="btn-reset" onclick="resetProgress()">↺ Сброс</button>
@@ -520,7 +521,6 @@ body.light .modal-radio-btn { border-color: #E0E0E0; color: #BBB; }
     <span class="search-icon">🔍</span>
     <input type="text" placeholder="Поиск задачи..." oninput="applyFilters()" id="searchInput">
   </div>
-  <button class="btn-add-task" onclick="openAddModal()">+ Задача</button>
 </div>
 
 <div class="tasklist" id="tasklist"></div>
