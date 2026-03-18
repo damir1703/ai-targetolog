@@ -360,6 +360,17 @@ body.light .note-clear-btn { color: #CCC; }
 .task-item.done .task-text { text-decoration: line-through; color: #666; }
 .no-results { text-align: center; color: #555; padding: 40px; font-size: 14px; }
 
+/* Clients counter */
+.clients-counter { display: flex; align-items: center; gap: 8px; background: #1A1A1A; border: 1px solid #2A2A2A; border-radius: 8px; padding: 6px 12px; }
+.clients-label { font-size: 16px; line-height: 1; }
+.clients-input { width: 44px; background: transparent; border: none; color: #4CAF50; font-size: 20px; font-weight: 800; text-align: center; outline: none; font-family: inherit; padding: 0; -moz-appearance: textfield; }
+.clients-input::-webkit-outer-spin-button, .clients-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.clients-val-label { font-size: 11px; color: #666; line-height: 1.2; }
+.clients-mrr { font-size: 11px; color: #4CAF50; font-weight: 600; line-height: 1.2; }
+body.light .clients-counter { background: #F5F5F5; border-color: #E0E0E0; }
+body.light .clients-val-label { color: #AAA; }
+@media (max-width: 768px) { .clients-counter { padding: 4px 8px; } .clients-input { font-size: 16px; width: 36px; } }
+
 /* Add task button */
 .btn-add-task { background: #E53935; border: none; color: #fff; padding: 5px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: background 0.15s; }
 .btn-add-task:hover { background: #c62828; }
@@ -466,6 +477,11 @@ body.light .modal-radio-btn { border-color: #E0E0E0; color: #BBB; }
         <div class="progress-bar-fill" id="totalBar" style="width:0%"></div>
       </div>
       <span style="font-size:12px;color:#666;" id="totalPct">0%</span>
+    </div>
+    <div class="clients-counter">
+      <span class="clients-label">👥</span>
+      <input type="number" id="clientsInput" class="clients-input" min="0" max="100" value="0" oninput="updateClients(this.value)" placeholder="0">
+      <div><div class="clients-val-label">клиентов</div><div class="clients-mrr" id="clientsMrr">$0/мес</div></div>
     </div>
     <button class="btn-add-task" onclick="openAddModal()">+ Задача</button>
     <button class="btn-theme" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">☀️</button>
@@ -1381,19 +1397,36 @@ function buildGrowthChart() {
     ctx.fillText('Сегодня', tx, pad.top - 2);
   }
 
-  // Actual data line (если есть)
-  if (GROWTH_ACTUAL.length > 1) {
+  // Actual data line
+  if (currentClients > 0) {
+    const actualPts = [
+      { date: GROWTH_START, clients: 0 },
+      { date: new Date() <= GROWTH_END ? new Date() : GROWTH_END, clients: Math.min(currentClients, 100) },
+    ];
+    // Filled area
     ctx.beginPath();
-    GROWTH_ACTUAL.forEach((pt, i) => {
-      const x = xOf(pt.date), y = yOf(pt.clients);
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    });
-    ctx.strokeStyle = '#4CAF50'; ctx.lineWidth = 2.5; ctx.setLineDash([]);
-    ctx.lineJoin = 'round'; ctx.stroke();
-    GROWTH_ACTUAL.forEach(pt => {
-      ctx.beginPath(); ctx.arc(xOf(pt.date), yOf(pt.clients), 4, 0, Math.PI*2);
-      ctx.fillStyle = '#4CAF50'; ctx.fill();
-    });
+    ctx.moveTo(xOf(actualPts[0].date), yOf(0));
+    actualPts.forEach(pt => ctx.lineTo(xOf(pt.date), yOf(pt.clients)));
+    ctx.lineTo(xOf(actualPts[actualPts.length-1].date), pad.top + ch);
+    ctx.lineTo(pad.left, pad.top + ch);
+    ctx.closePath();
+    const actualGrad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
+    actualGrad.addColorStop(0, 'rgba(76,175,80,0.2)');
+    actualGrad.addColorStop(1, 'rgba(76,175,80,0.02)');
+    ctx.fillStyle = actualGrad; ctx.fill();
+    // Line
+    ctx.beginPath();
+    actualPts.forEach((pt, i) => { i === 0 ? ctx.moveTo(xOf(pt.date), yOf(pt.clients)) : ctx.lineTo(xOf(pt.date), yOf(pt.clients)); });
+    ctx.strokeStyle = '#4CAF50'; ctx.lineWidth = 2.5; ctx.setLineDash([]); ctx.lineJoin = 'round'; ctx.stroke();
+    // End dot + label
+    const last = actualPts[actualPts.length - 1];
+    const lx = xOf(last.date), ly = yOf(last.clients);
+    ctx.beginPath(); ctx.arc(lx, ly, 5, 0, Math.PI*2);
+    ctx.fillStyle = '#4CAF50'; ctx.fill();
+    ctx.strokeStyle = isDark ? '#0D0D0D' : '#fff'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#4CAF50'; ctx.font = '700 11px system-ui';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText(currentClients + ' кл.', lx + 8, ly);
   }
 
   // Axes
@@ -1507,6 +1540,24 @@ function saveDone() {
 function saveNotes() { localStorage.setItem('ai_targ_notes', JSON.stringify(notes)); }
 function saveDoneAt() { localStorage.setItem('ai_targ_done_at', JSON.stringify(doneAt)); }
 function saveCustomTasks() { localStorage.setItem('ai_targ_custom', JSON.stringify(customTasks)); }
+
+let currentClients = parseInt(localStorage.getItem('ai_targ_clients') || '0');
+function updateClients(val) {
+  currentClients = Math.max(0, Math.min(100, parseInt(val) || 0));
+  localStorage.setItem('ai_targ_clients', currentClients);
+  const mrr = currentClients * 200;
+  document.getElementById('clientsMrr').textContent = '$' + mrr.toLocaleString() + '/мес';
+  buildGrowthChart();
+}
+// Init on load
+function initClientsCounter() {
+  const input = document.getElementById('clientsInput');
+  if (input) {
+    input.value = currentClients;
+    const mrr = currentClients * 200;
+    document.getElementById('clientsMrr').textContent = '$' + mrr.toLocaleString() + '/мес';
+  }
+}
 
 function openAddModal() {
   if (currentPhase !== 'all') document.getElementById('newTaskPhase').value = currentPhase;
@@ -1946,6 +1997,7 @@ function togglePhaseDetail(ph) {
 buildTimeline();
 buildGrowthChart();
 updateGrowthQuickStats();
+initClientsCounter();
 renderAll();
 </script>
 <div class="modal-overlay" id="addTaskModal" onclick="closeAddModal(event)">
