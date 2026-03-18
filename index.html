@@ -360,6 +360,44 @@ body.light .note-clear-btn { color: #CCC; }
 .task-item.done .task-text { text-decoration: line-through; color: #666; }
 .no-results { text-align: center; color: #555; padding: 40px; font-size: 14px; }
 
+/* Add task button */
+.btn-add-task { background: #E53935; border: none; color: #fff; padding: 5px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: background 0.15s; }
+.btn-add-task:hover { background: #c62828; }
+
+/* Delete button on custom tasks */
+.task-delete-btn { background: none; border: none; cursor: pointer; font-size: 13px; opacity: 0; transition: opacity 0.15s; padding: 0 2px; flex-shrink: 0; margin-top: 2px; }
+.task-item:hover .task-delete-btn { opacity: 0.5; }
+.task-item:hover .task-delete-btn:hover { opacity: 1; }
+
+/* Modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 2000; align-items: center; justify-content: center; padding: 16px; }
+.modal-overlay.open { display: flex; }
+.modal { background: #161616; border: 1px solid #2A2A2A; border-radius: 14px; padding: 24px; width: 100%; max-width: 460px; }
+.modal-title { font-size: 16px; font-weight: 700; color: #E0E0E0; margin-bottom: 20px; }
+.modal-field { margin-bottom: 14px; }
+.modal-label { font-size: 11px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; display: block; }
+.modal-input { width: 100%; background: #1A1A1A; border: 1px solid #2A2A2A; color: #E0E0E0; border-radius: 8px; padding: 10px 12px; font-size: 14px; line-height: 1.5; outline: none; font-family: inherit; box-sizing: border-box; resize: vertical; }
+.modal-input:focus { border-color: #E53935; }
+.modal-input::placeholder { color: #3A3A3A; }
+.modal-select { width: 100%; background: #1A1A1A; border: 1px solid #2A2A2A; color: #E0E0E0; border-radius: 8px; padding: 10px 12px; font-size: 14px; outline: none; font-family: inherit; cursor: pointer; box-sizing: border-box; }
+.modal-select:focus { border-color: #E53935; }
+.modal-radios { display: flex; gap: 8px; }
+.modal-radio-btn { flex: 1; text-align: center; padding: 8px 4px; border: 1px solid #2A2A2A; border-radius: 8px; cursor: pointer; font-size: 12px; color: #666; transition: all 0.15s; user-select: none; }
+.modal-radio-btn:hover { border-color: #444; color: #aaa; }
+.modal-radio-btn.sel-critical { background: rgba(229,57,53,0.12); border-color: #E53935; color: #E53935; }
+.modal-radio-btn.sel-important { background: rgba(255,152,0,0.12); border-color: #FF9800; color: #FF9800; }
+.modal-radio-btn.sel-nice { background: rgba(76,175,80,0.12); border-color: #4CAF50; color: #4CAF50; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+.btn-modal-cancel { background: transparent; border: 1px solid #2A2A2A; color: #888; padding: 9px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+.btn-modal-cancel:hover { border-color: #444; color: #ccc; }
+.btn-modal-confirm { background: #E53935; border: none; color: #fff; padding: 9px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; }
+.btn-modal-confirm:hover { background: #c62828; }
+body.light .modal { background: #fff; border-color: #E0E0E0; }
+body.light .modal-title { color: #1A1A1A; }
+body.light .modal-input, body.light .modal-select { background: #F5F5F5; border-color: #E0E0E0; color: #1A1A1A; }
+body.light .modal-input::placeholder { color: #CCC; }
+body.light .modal-radio-btn { border-color: #E0E0E0; color: #BBB; }
+
 /* Priority colors */
 .p-critical { color: #E53935; }
 .p-important { color: #FF9800; }
@@ -482,6 +520,7 @@ body.light .note-clear-btn { color: #CCC; }
     <span class="search-icon">🔍</span>
     <input type="text" placeholder="Поиск задачи..." oninput="applyFilters()" id="searchInput">
   </div>
+  <button class="btn-add-task" onclick="openAddModal()">+ Задача</button>
 </div>
 
 <div class="tasklist" id="tasklist"></div>
@@ -970,6 +1009,9 @@ let done = JSON.parse(localStorage.getItem('ai_targ_done') || '{}');
 let notes = JSON.parse(localStorage.getItem('ai_targ_notes') || '{}');
 let doneAt = JSON.parse(localStorage.getItem('ai_targ_done_at') || '{}');
 let openNoteId = null;
+let customTasks = JSON.parse(localStorage.getItem('ai_targ_custom') || '[]');
+customTasks.forEach(t => TASKS.push(t));
+let selectedModalPri = 'critical';
 let currentPhase = 'all';
 let currentDept = 'all';
 let currentPri = 'all';
@@ -1447,6 +1489,58 @@ function saveDone() {
 }
 function saveNotes() { localStorage.setItem('ai_targ_notes', JSON.stringify(notes)); }
 function saveDoneAt() { localStorage.setItem('ai_targ_done_at', JSON.stringify(doneAt)); }
+function saveCustomTasks() { localStorage.setItem('ai_targ_custom', JSON.stringify(customTasks)); }
+
+function openAddModal() {
+  if (currentPhase !== 'all') document.getElementById('newTaskPhase').value = currentPhase;
+  document.getElementById('addTaskModal').classList.add('open');
+  setTimeout(() => document.getElementById('newTaskText').focus(), 50);
+}
+function closeAddModal(e) {
+  if (e && e.target !== document.getElementById('addTaskModal')) return;
+  document.getElementById('addTaskModal').classList.remove('open');
+  document.getElementById('newTaskText').value = '';
+  selectedModalPri = 'critical';
+  selectModalPri('critical');
+}
+function selectModalPri(pri) {
+  selectedModalPri = pri;
+  document.querySelectorAll('.modal-radio-btn').forEach(b => {
+    b.className = 'modal-radio-btn';
+    if (b.dataset.pri === pri) b.classList.add('sel-' + pri);
+  });
+}
+function confirmAddTask() {
+  const text = document.getElementById('newTaskText').value.trim();
+  if (!text) { document.getElementById('newTaskText').focus(); return; }
+  const task = {
+    id: 'custom_' + Date.now(),
+    phase: document.getElementById('newTaskPhase').value,
+    cat: document.getElementById('newTaskCat').value,
+    pri: selectedModalPri,
+    text,
+    custom: true,
+  };
+  customTasks.push(task);
+  TASKS.push(task);
+  saveCustomTasks();
+  document.getElementById('addTaskModal').classList.remove('open');
+  document.getElementById('newTaskText').value = '';
+  renderAll();
+}
+function deleteCustomTask(id, e) {
+  e.stopPropagation();
+  if (!confirm('Удалить эту задачу?')) return;
+  customTasks = customTasks.filter(t => t.id !== id);
+  const idx = TASKS.findIndex(t => t.id === id);
+  if (idx !== -1) TASKS.splice(idx, 1);
+  delete done[id]; delete doneAt[id]; delete notes[id];
+  saveDone(); saveDoneAt(); saveNotes(); saveCustomTasks();
+  renderAll();
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('addTaskModal').classList.remove('open');
+});
 
 function toggleTask(id) {
   done[id] = !done[id];
@@ -1581,6 +1675,7 @@ function makeCatBlock(cat, catTasks) {
         </div>
       </div>
       <button class="task-note-btn ${notes[t.id] ? 'has-note' : ''}" data-note-id="${t.id}" onclick="toggleNote('${t.id}',event)" title="Заметка">📝</button>
+      ${t.custom ? `<button class="task-delete-btn" onclick="deleteCustomTask('${t.id}',event)" title="Удалить задачу">🗑</button>` : ''}
       <span style="font-size:10px;color:#444;flex-shrink:0;margin-top:2px;">Ф${t.phase}</span>
     `;
     tasksEl.appendChild(item);
@@ -1836,5 +1931,49 @@ buildGrowthChart();
 updateGrowthQuickStats();
 renderAll();
 </script>
+<div class="modal-overlay" id="addTaskModal" onclick="closeAddModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">➕ Новая задача</div>
+    <div class="modal-field">
+      <label class="modal-label">Текст задачи</label>
+      <textarea class="modal-input" id="newTaskText" rows="3" placeholder="Что нужно сделать?"></textarea>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Фаза</label>
+      <select class="modal-select" id="newTaskPhase">
+        <option value="1">Фаза 1 — 0→10 клиентов</option>
+        <option value="2">Фаза 2 — 10→50 клиентов</option>
+        <option value="3">Фаза 3 — 50→100 клиентов</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Раздел</label>
+      <select class="modal-select" id="newTaskCat">
+        <option value="offer">🎯 Оффер</option>
+        <option value="content">📝 Контент & SMM</option>
+        <option value="promotion">📈 Продвижение & Реклама</option>
+        <option value="product">📦 Продукт</option>
+        <option value="tech">⚙️ Техника</option>
+        <option value="sales">💬 Продажи & Встречи</option>
+        <option value="crm">🔄 CRM & Воронка</option>
+        <option value="legal">📄 Юридика</option>
+        <option value="finance">💵 Финансы</option>
+        <option value="team">👥 Команда</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Приоритет</label>
+      <div class="modal-radios">
+        <div class="modal-radio-btn sel-critical" data-pri="critical" onclick="selectModalPri('critical')">🔴 Критично</div>
+        <div class="modal-radio-btn" data-pri="important" onclick="selectModalPri('important')">🟡 Важно</div>
+        <div class="modal-radio-btn" data-pri="nice" onclick="selectModalPri('nice')">🟢 Желательно</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeAddModal()">Отмена</button>
+      <button class="btn-modal-confirm" onclick="confirmAddTask()">Добавить</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
