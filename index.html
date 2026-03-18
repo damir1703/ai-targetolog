@@ -480,7 +480,7 @@ body.light .modal-radio-btn { border-color: #E0E0E0; color: #BBB; }
     </div>
     <div class="clients-counter">
       <span class="clients-label">👥</span>
-      <input type="number" id="clientsInput" class="clients-input" min="0" max="100" value="0" oninput="updateClients(this.value)" placeholder="0">
+      <input type="number" id="clientsInput" class="clients-input" min="0" value="0" oninput="updateClients(this.value)" placeholder="0">
       <div><div class="clients-val-label">клиентов</div><div class="clients-mrr" id="clientsMrr">$0/мес</div></div>
     </div>
     <button class="btn-add-task" onclick="openAddModal()">+ Задача</button>
@@ -1401,7 +1401,7 @@ function buildGrowthChart() {
   if (currentClients > 0) {
     const actualPts = [
       { date: GROWTH_START, clients: 0 },
-      { date: new Date() <= GROWTH_END ? new Date() : GROWTH_END, clients: Math.min(currentClients, 100) },
+      { date: new Date() <= GROWTH_END ? new Date() : GROWTH_END, clients: Math.min(currentClients, maxClients - 5) },
     ];
     // Filled area
     ctx.beginPath();
@@ -1543,7 +1543,7 @@ function saveCustomTasks() { localStorage.setItem('ai_targ_custom', JSON.stringi
 
 let currentClients = parseInt(localStorage.getItem('ai_targ_clients') || '0');
 function updateClients(val) {
-  currentClients = Math.max(0, Math.min(100, parseInt(val) || 0));
+  currentClients = Math.max(0, parseInt(val) || 0);
   localStorage.setItem('ai_targ_clients', currentClients);
   const mrr = currentClients * 200;
   document.getElementById('clientsMrr').textContent = '$' + mrr.toLocaleString() + '/мес';
